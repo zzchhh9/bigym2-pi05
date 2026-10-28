@@ -122,17 +122,18 @@ pre-release substrate:
 
 | Task | 26k | 27k | 28k | 29k | 30k | Pooled /250 |
 |---|---|---|---|---|---|---|
-| reach_target_multi_modal | 47 | 46 | 45 | 43 | 33 | 214 (85.6%) |
+| reach_target_multi_modal | 47 | 46 | 45 | 43 | 45 | 226 (90.4%) |
 | reach_target_dual | 26 | 32 | 29 | 29 | 28 | 144 (57.6%) |
 | drawer_top_open | 50 | 50 | 49 | 50 | 48 | 247 (98.8%) |
-| drawer_top_close | 50 | 50 | 48 | 38 | 38 | 224 (89.6%) |
+| drawer_top_close | 50 | 50 | 50 | 50 | 50 | 250 (100%) |
 | move_plate | 31 | 37 | 29 | 34 | 32 | 163 (65.2%) |
 | move_two_plates | 34 | 33 | 37 | 35 | 32 | 171 (68.4%) |
 | dishwasher_load_cups | 45 | 46 | 49 | 46 | 45 | 231 (92.4%) |
 | dishwasher_close | 37 | 38 | 46 | 36 | 40 | 197 (78.8%) |
 | pick_box | 9 | 10 | 9 | 13 | 7 | 48 (19.2%) |
 
-Each row comes from one training run. We have not measured the spread over training
+These are the numbers of the paper's main table (pooled, rounded). Each row comes from one
+training run. We have not measured the spread over training
 seeds. `eval_v3.py` does not seed torch, so the flow-matching noise differs between runs
 and the same checkpoint does not give the same per-seed outcomes twice.
 
