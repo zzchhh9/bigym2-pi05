@@ -1,0 +1,596 @@
+{
+  "move_plate": {
+    "action_dim": 20,
+    "state_dim": 50,
+    "floating_dofs": [
+      "x",
+      "y",
+      "z",
+      "rz"
+    ],
+    "n_grippers": 2,
+    "limb_names": [
+      "left_shoulder_pitch_joint",
+      "left_shoulder_roll_joint",
+      "left_shoulder_yaw_joint",
+      "left_elbow_joint",
+      "left_wrist_roll_joint",
+      "left_wrist_pitch_joint",
+      "left_wrist_yaw_joint",
+      "right_shoulder_pitch_joint",
+      "right_shoulder_roll_joint",
+      "right_shoulder_yaw_joint",
+      "right_elbow_joint",
+      "right_wrist_roll_joint",
+      "right_wrist_pitch_joint",
+      "right_wrist_yaw_joint"
+    ],
+    "arm_action_to_state": {
+      "left_shoulder_pitch_joint": 0,
+      "left_shoulder_roll_joint": 1,
+      "left_shoulder_yaw_joint": 2,
+      "left_elbow_joint": 3,
+      "left_wrist_roll_joint": 4,
+      "left_wrist_pitch_joint": 5,
+      "left_wrist_yaw_joint": 6,
+      "right_shoulder_pitch_joint": 9,
+      "right_shoulder_roll_joint": 10,
+      "right_shoulder_yaw_joint": 11,
+      "right_elbow_joint": 12,
+      "right_wrist_roll_joint": 13,
+      "right_wrist_pitch_joint": 14,
+      "right_wrist_yaw_joint": 15
+    },
+    "slices": {
+      "proprioception": [
+        0,
+        44
+      ],
+      "proprioception_grippers": [
+        44,
+        46
+      ],
+      "proprioception_floating_base": [
+        46,
+        50
+      ]
+    },
+    "meta_action_dim": 20,
+    "substrate": "bigym2-mj381-v3"
+  },
+  "drawer_top_open": {
+    "action_dim": 20,
+    "state_dim": 50,
+    "floating_dofs": [
+      "x",
+      "y",
+      "z",
+      "rz"
+    ],
+    "n_grippers": 2,
+    "limb_names": [
+      "left_shoulder_pitch_joint",
+      "left_shoulder_roll_joint",
+      "left_shoulder_yaw_joint",
+      "left_elbow_joint",
+      "left_wrist_roll_joint",
+      "left_wrist_pitch_joint",
+      "left_wrist_yaw_joint",
+      "right_shoulder_pitch_joint",
+      "right_shoulder_roll_joint",
+      "right_shoulder_yaw_joint",
+      "right_elbow_joint",
+      "right_wrist_roll_joint",
+      "right_wrist_pitch_joint",
+      "right_wrist_yaw_joint"
+    ],
+    "arm_action_to_state": {
+      "left_shoulder_pitch_joint": 0,
+      "left_shoulder_roll_joint": 1,
+      "left_shoulder_yaw_joint": 2,
+      "left_elbow_joint": 3,
+      "left_wrist_roll_joint": 4,
+      "left_wrist_pitch_joint": 5,
+      "left_wrist_yaw_joint": 6,
+      "right_shoulder_pitch_joint": 9,
+      "right_shoulder_roll_joint": 10,
+      "right_shoulder_yaw_joint": 11,
+      "right_elbow_joint": 12,
+      "right_wrist_roll_joint": 13,
+      "right_wrist_pitch_joint": 14,
+      "right_wrist_yaw_joint": 15
+    },
+    "slices": {
+      "proprioception": [
+        0,
+        44
+      ],
+      "proprioception_grippers": [
+        44,
+        46
+      ],
+      "proprioception_floating_base": [
+        46,
+        50
+      ]
+    },
+    "meta_action_dim": 20,
+    "substrate": "bigym2-mj381-v3"
+  },
+  "drawer_top_close": {
+    "action_dim": 20,
+    "state_dim": 50,
+    "floating_dofs": [
+      "x",
+      "y",
+      "z",
+      "rz"
+    ],
+    "n_grippers": 2,
+    "limb_names": [
+      "left_shoulder_pitch_joint",
+      "left_shoulder_roll_joint",
+      "left_shoulder_yaw_joint",
+      "left_elbow_joint",
+      "left_wrist_roll_joint",
+      "left_wrist_pitch_joint",
+      "left_wrist_yaw_joint",
+      "right_shoulder_pitch_joint",
+      "right_shoulder_roll_joint",
+      "right_shoulder_yaw_joint",
+      "right_elbow_joint",
+      "right_wrist_roll_joint",
+      "right_wrist_pitch_joint",
+      "right_wrist_yaw_joint"
+    ],
+    "arm_action_to_state": {
+      "left_shoulder_pitch_joint": 0,
+      "left_shoulder_roll_joint": 1,
+      "left_shoulder_yaw_joint": 2,
+      "left_elbow_joint": 3,
+      "left_wrist_roll_joint": 4,
+      "left_wrist_pitch_joint": 5,
+      "left_wrist_yaw_joint": 6,
+      "right_shoulder_pitch_joint": 9,
+      "right_shoulder_roll_joint": 10,
+      "right_shoulder_yaw_joint": 11,
+      "right_elbow_joint": 12,
+      "right_wrist_roll_joint": 13,
+      "right_wrist_pitch_joint": 14,
+      "right_wrist_yaw_joint": 15
+    },
+    "slices": {
+      "proprioception": [
+        0,
+        44
+      ],
+      "proprioception_grippers": [
+        44,
+        46
+      ],
+      "proprioception_floating_base": [
+        46,
+        50
+      ]
+    },
+    "meta_action_dim": 20,
+    "substrate": "bigym2-mj381-v3"
+  },
+  "reach_target_single": {
+    "action_dim": 20,
+    "state_dim": 50,
+    "floating_dofs": [
+      "x",
+      "y",
+      "z",
+      "rz"
+    ],
+    "n_grippers": 2,
+    "limb_names": [
+      "left_shoulder_pitch_joint",
+      "left_shoulder_roll_joint",
+      "left_shoulder_yaw_joint",
+      "left_elbow_joint",
+      "left_wrist_roll_joint",
+      "left_wrist_pitch_joint",
+      "left_wrist_yaw_joint",
+      "right_shoulder_pitch_joint",
+      "right_shoulder_roll_joint",
+      "right_shoulder_yaw_joint",
+      "right_elbow_joint",
+      "right_wrist_roll_joint",
+      "right_wrist_pitch_joint",
+      "right_wrist_yaw_joint"
+    ],
+    "arm_action_to_state": {
+      "left_shoulder_pitch_joint": 0,
+      "left_shoulder_roll_joint": 1,
+      "left_shoulder_yaw_joint": 2,
+      "left_elbow_joint": 3,
+      "left_wrist_roll_joint": 4,
+      "left_wrist_pitch_joint": 5,
+      "left_wrist_yaw_joint": 6,
+      "right_shoulder_pitch_joint": 9,
+      "right_shoulder_roll_joint": 10,
+      "right_shoulder_yaw_joint": 11,
+      "right_elbow_joint": 12,
+      "right_wrist_roll_joint": 13,
+      "right_wrist_pitch_joint": 14,
+      "right_wrist_yaw_joint": 15
+    },
+    "slices": {
+      "proprioception": [
+        0,
+        44
+      ],
+      "proprioception_grippers": [
+        44,
+        46
+      ],
+      "proprioception_floating_base": [
+        46,
+        50
+      ]
+    },
+    "meta_action_dim": 20,
+    "substrate": "bigym2-mj381-v3"
+  },
+  "reach_target_dual": {
+    "action_dim": 20,
+    "state_dim": 50,
+    "floating_dofs": [
+      "x",
+      "y",
+      "z",
+      "rz"
+    ],
+    "n_grippers": 2,
+    "limb_names": [
+      "left_shoulder_pitch_joint",
+      "left_shoulder_roll_joint",
+      "left_shoulder_yaw_joint",
+      "left_elbow_joint",
+      "left_wrist_roll_joint",
+      "left_wrist_pitch_joint",
+      "left_wrist_yaw_joint",
+      "right_shoulder_pitch_joint",
+      "right_shoulder_roll_joint",
+      "right_shoulder_yaw_joint",
+      "right_elbow_joint",
+      "right_wrist_roll_joint",
+      "right_wrist_pitch_joint",
+      "right_wrist_yaw_joint"
+    ],
+    "arm_action_to_state": {
+      "left_shoulder_pitch_joint": 0,
+      "left_shoulder_roll_joint": 1,
+      "left_shoulder_yaw_joint": 2,
+      "left_elbow_joint": 3,
+      "left_wrist_roll_joint": 4,
+      "left_wrist_pitch_joint": 5,
+      "left_wrist_yaw_joint": 6,
+      "right_shoulder_pitch_joint": 9,
+      "right_shoulder_roll_joint": 10,
+      "right_shoulder_yaw_joint": 11,
+      "right_elbow_joint": 12,
+      "right_wrist_roll_joint": 13,
+      "right_wrist_pitch_joint": 14,
+      "right_wrist_yaw_joint": 15
+    },
+    "slices": {
+      "proprioception": [
+        0,
+        44
+      ],
+      "proprioception_grippers": [
+        44,
+        46
+      ],
+      "proprioception_floating_base": [
+        46,
+        50
+      ]
+    },
+    "meta_action_dim": 20,
+    "substrate": "bigym2-mj381-v3"
+  },
+  "dishwasher_close": {
+    "action_dim": 21,
+    "state_dim": 56,
+    "floating_dofs": [
+      "x",
+      "y",
+      "z",
+      "rz",
+      "ry"
+    ],
+    "n_grippers": 2,
+    "limb_names": [
+      "left_shoulder_pitch_joint",
+      "left_shoulder_roll_joint",
+      "left_shoulder_yaw_joint",
+      "left_elbow_joint",
+      "left_wrist_roll_joint",
+      "left_wrist_pitch_joint",
+      "left_wrist_yaw_joint",
+      "right_shoulder_pitch_joint",
+      "right_shoulder_roll_joint",
+      "right_shoulder_yaw_joint",
+      "right_elbow_joint",
+      "right_wrist_roll_joint",
+      "right_wrist_pitch_joint",
+      "right_wrist_yaw_joint"
+    ],
+    "arm_action_to_state": {
+      "left_shoulder_pitch_joint": 3,
+      "left_shoulder_roll_joint": 4,
+      "left_shoulder_yaw_joint": 5,
+      "left_elbow_joint": 6,
+      "left_wrist_roll_joint": 7,
+      "left_wrist_pitch_joint": 8,
+      "left_wrist_yaw_joint": 9,
+      "right_shoulder_pitch_joint": 12,
+      "right_shoulder_roll_joint": 13,
+      "right_shoulder_yaw_joint": 14,
+      "right_elbow_joint": 15,
+      "right_wrist_roll_joint": 16,
+      "right_wrist_pitch_joint": 17,
+      "right_wrist_yaw_joint": 18
+    },
+    "slices": {
+      "proprioception": [
+        0,
+        50
+      ],
+      "proprioception_grippers": [
+        50,
+        52
+      ],
+      "proprioception_floating_base": [
+        52,
+        56
+      ]
+    },
+    "meta_action_dim": 21,
+    "substrate": "bigym2-mj381-v3"
+  },
+  "reach_target_multi_modal": {
+    "action_dim": 20,
+    "state_dim": 50,
+    "floating_dofs": [
+      "x",
+      "y",
+      "z",
+      "rz"
+    ],
+    "n_grippers": 2,
+    "limb_names": [
+      "left_shoulder_pitch_joint",
+      "left_shoulder_roll_joint",
+      "left_shoulder_yaw_joint",
+      "left_elbow_joint",
+      "left_wrist_roll_joint",
+      "left_wrist_pitch_joint",
+      "left_wrist_yaw_joint",
+      "right_shoulder_pitch_joint",
+      "right_shoulder_roll_joint",
+      "right_shoulder_yaw_joint",
+      "right_elbow_joint",
+      "right_wrist_roll_joint",
+      "right_wrist_pitch_joint",
+      "right_wrist_yaw_joint"
+    ],
+    "arm_action_to_state": {
+      "left_shoulder_pitch_joint": 0,
+      "left_shoulder_roll_joint": 1,
+      "left_shoulder_yaw_joint": 2,
+      "left_elbow_joint": 3,
+      "left_wrist_roll_joint": 4,
+      "left_wrist_pitch_joint": 5,
+      "left_wrist_yaw_joint": 6,
+      "right_shoulder_pitch_joint": 9,
+      "right_shoulder_roll_joint": 10,
+      "right_shoulder_yaw_joint": 11,
+      "right_elbow_joint": 12,
+      "right_wrist_roll_joint": 13,
+      "right_wrist_pitch_joint": 14,
+      "right_wrist_yaw_joint": 15
+    },
+    "slices": {
+      "proprioception": [
+        0,
+        44
+      ],
+      "proprioception_grippers": [
+        44,
+        46
+      ],
+      "proprioception_floating_base": [
+        46,
+        50
+      ]
+    },
+    "meta_action_dim": 20,
+    "substrate": "bigym2-mj381-v3"
+  },
+  "dishwasher_load_cups": {
+    "action_dim": 21,
+    "state_dim": 56,
+    "floating_dofs": [
+      "x",
+      "y",
+      "z",
+      "rz",
+      "ry"
+    ],
+    "n_grippers": 2,
+    "limb_names": [
+      "left_shoulder_pitch_joint",
+      "left_shoulder_roll_joint",
+      "left_shoulder_yaw_joint",
+      "left_elbow_joint",
+      "left_wrist_roll_joint",
+      "left_wrist_pitch_joint",
+      "left_wrist_yaw_joint",
+      "right_shoulder_pitch_joint",
+      "right_shoulder_roll_joint",
+      "right_shoulder_yaw_joint",
+      "right_elbow_joint",
+      "right_wrist_roll_joint",
+      "right_wrist_pitch_joint",
+      "right_wrist_yaw_joint"
+    ],
+    "arm_action_to_state": {
+      "left_shoulder_pitch_joint": 3,
+      "left_shoulder_roll_joint": 4,
+      "left_shoulder_yaw_joint": 5,
+      "left_elbow_joint": 6,
+      "left_wrist_roll_joint": 7,
+      "left_wrist_pitch_joint": 8,
+      "left_wrist_yaw_joint": 9,
+      "right_shoulder_pitch_joint": 12,
+      "right_shoulder_roll_joint": 13,
+      "right_shoulder_yaw_joint": 14,
+      "right_elbow_joint": 15,
+      "right_wrist_roll_joint": 16,
+      "right_wrist_pitch_joint": 17,
+      "right_wrist_yaw_joint": 18
+    },
+    "slices": {
+      "proprioception": [
+        0,
+        50
+      ],
+      "proprioception_grippers": [
+        50,
+        52
+      ],
+      "proprioception_floating_base": [
+        52,
+        56
+      ]
+    },
+    "meta_action_dim": 21,
+    "substrate": "bigym2-mj381-v3"
+  },
+  "move_two_plates": {
+    "action_dim": 21,
+    "state_dim": 56,
+    "floating_dofs": [
+      "x",
+      "y",
+      "z",
+      "rz",
+      "ry"
+    ],
+    "n_grippers": 2,
+    "limb_names": [
+      "left_shoulder_pitch_joint",
+      "left_shoulder_roll_joint",
+      "left_shoulder_yaw_joint",
+      "left_elbow_joint",
+      "left_wrist_roll_joint",
+      "left_wrist_pitch_joint",
+      "left_wrist_yaw_joint",
+      "right_shoulder_pitch_joint",
+      "right_shoulder_roll_joint",
+      "right_shoulder_yaw_joint",
+      "right_elbow_joint",
+      "right_wrist_roll_joint",
+      "right_wrist_pitch_joint",
+      "right_wrist_yaw_joint"
+    ],
+    "arm_action_to_state": {
+      "left_shoulder_pitch_joint": 3,
+      "left_shoulder_roll_joint": 4,
+      "left_shoulder_yaw_joint": 5,
+      "left_elbow_joint": 6,
+      "left_wrist_roll_joint": 7,
+      "left_wrist_pitch_joint": 8,
+      "left_wrist_yaw_joint": 9,
+      "right_shoulder_pitch_joint": 12,
+      "right_shoulder_roll_joint": 13,
+      "right_shoulder_yaw_joint": 14,
+      "right_elbow_joint": 15,
+      "right_wrist_roll_joint": 16,
+      "right_wrist_pitch_joint": 17,
+      "right_wrist_yaw_joint": 18
+    },
+    "slices": {
+      "proprioception": [
+        0,
+        50
+      ],
+      "proprioception_grippers": [
+        50,
+        52
+      ],
+      "proprioception_floating_base": [
+        52,
+        56
+      ]
+    },
+    "meta_action_dim": 21,
+    "substrate": "bigym2-mj381-v3"
+  },
+  "pick_box": {
+    "action_dim": 21,
+    "state_dim": 56,
+    "floating_dofs": [
+      "x",
+      "y",
+      "z",
+      "rz",
+      "ry"
+    ],
+    "n_grippers": 2,
+    "limb_names": [
+      "left_shoulder_pitch_joint",
+      "left_shoulder_roll_joint",
+      "left_shoulder_yaw_joint",
+      "left_elbow_joint",
+      "left_wrist_roll_joint",
+      "left_wrist_pitch_joint",
+      "left_wrist_yaw_joint",
+      "right_shoulder_pitch_joint",
+      "right_shoulder_roll_joint",
+      "right_shoulder_yaw_joint",
+      "right_elbow_joint",
+      "right_wrist_roll_joint",
+      "right_wrist_pitch_joint",
+      "right_wrist_yaw_joint"
+    ],
+    "arm_action_to_state": {
+      "left_shoulder_pitch_joint": 3,
+      "left_shoulder_roll_joint": 4,
+      "left_shoulder_yaw_joint": 5,
+      "left_elbow_joint": 6,
+      "left_wrist_roll_joint": 7,
+      "left_wrist_pitch_joint": 8,
+      "left_wrist_yaw_joint": 9,
+      "right_shoulder_pitch_joint": 12,
+      "right_shoulder_roll_joint": 13,
+      "right_shoulder_yaw_joint": 14,
+      "right_elbow_joint": 15,
+      "right_wrist_roll_joint": 16,
+      "right_wrist_pitch_joint": 17,
+      "right_wrist_yaw_joint": 18
+    },
+    "slices": {
+      "proprioception": [
+        0,
+        50
+      ],
+      "proprioception_floating_base": [
+        52,
+        56
+      ],
+      "proprioception_grippers": [
+        50,
+        52
+      ]
+    },
+    "meta_action_dim": 21,
+    "substrate": "bigym2-mj381-v3"
+  }
+}
