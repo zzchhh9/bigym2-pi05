@@ -95,9 +95,9 @@ hf download SWIRL-Lab/bigym-g1-native60 --repo-type dataset \
 python scripts/export_v3.py $TASK
 python scripts/make_delta_v3.py $TASK
 
-# 3. Gate: replay the demos through the eval env. Every episode must succeed.
-#    max|state-dataset| is the largest gap between the env state and the dataset
-#    state; a wrong state layout gives gaps of order 1 from the first steps.
+# 3. Check: replay the demos through the eval env. On the public release not
+#    every demo succeeds (7-10 of 10 in our runs; see "Substrate"). A wrong
+#    state layout shows as max|state-dataset| of order 1 from the first steps.
 python scripts/eval_v3.py --task $TASK --replay --episodes 10 --out work/replay_$TASK.json
 
 # 4. Train (6 GPUs x batch 8, 30000 steps, a checkpoint every 1000 steps).
@@ -140,15 +140,30 @@ and the same checkpoint does not give the same per-seed outcomes twice.
 ### Check on the public release
 
 We ran `scripts/` from a clean environment (public BiGym2 `d715013`, LeRobot `b1bf24f5`,
-the public dataset), on 8 × H20, on 2026-10-28:
+the public dataset at revision `4c3e441`) on H20 GPUs, on 2026-10-28 and 2026-10-29. For each
+of the nine tasks: export and delta stats against the stats saved in our checkpoint, 10
+replayed demos, and our 30k-step checkpoint on seeds 620000-620049.
 
-- `export_v3.py` + `make_delta_v3.py` on `move_plate`: the action and state quantiles, mean
-  and std equal the normaliser stats saved in our 30k-step checkpoint exactly (difference 0,
-  37705 frames in both).
-- Replay gate: 10 of 10 `move_plate` demos succeed.
-- Our `move_plate` 30k-step checkpoint, evaluated with `eval_v3.py` on the public env:
-  **33/50** (paper run: 32/50 on the pre-release substrate).
-- `launch_v3.sh` trains 20 steps on 2 GPUs; the saved preprocessor has the 20 action names
+| Task | Stats vs our checkpoint | Replay | 30k ckpt, public env | 30k ckpt, paper run |
+|---|---|---|---|---|
+| reach_target_multi_modal | equal | 10/10 | 47/50 | 45/50 |
+| reach_target_dual | equal | 9/10 | 28/50 | 28/50 |
+| drawer_top_close | equal | 9/10 | 50/50 | 50/50 |
+| drawer_top_open | equal | 10/10 | 48/50 | 48/50 |
+| move_plate | equal | 10/10 | 33/50 | 32/50 |
+| move_two_plates | equal | 9/10 | 34/50 | 32/50 |
+| dishwasher_load_cups | differ (45998 vs 46027 frames) | 7/10 | 48/50 | 45/50 |
+| dishwasher_close | equal | 10/10 | 36/50 | 40/50 |
+| pick_box | differ (100928 vs 101290 frames) | 7/10 | 12/50 | 7/50 |
+
+- "equal" means the action and state quantiles, mean, std, min and max are identical to the
+  normaliser stats in our checkpoint (difference 0). For `dishwasher_load_cups` and
+  `pick_box` the public demonstrations have fewer frames than the ones we trained on (we
+  think the episode ends were re-cut after our runs; we have not checked this). A model trained on the public data for these two tasks is not
+  trained on exactly our data.
+- Every public-env score is inside the range of our five paper checkpoints (26k-30k) for
+  that task, in the per-checkpoint table under "Our numbers". With 50 episodes, one standard error is about 3 episodes.
+- `launch_v3.sh` trains 20 steps on 2 GPUs; the saved preprocessor has the action names
   and `max_length: 200`.
 
 ## Substrate
@@ -166,7 +181,8 @@ difference.
 The public demonstrations do not replay bit-exactly on the public env. For `move_plate`,
 `substrate_fingerprint()["contact_signature"]` is `36156d4845f2db32` on BiGym2 `d715013`
 and `a3972624f79d3e98` in the demos' `source_metadata.json`. The replayed `qpos` is off by
-about 3e-3 after the first step, and 10 of 10 replayed demos still succeed.
+about 3e-3 after the first step. Of 10 replayed demos per task, 7 to 10 succeed (table
+above).
 
 ## Files
 
