@@ -1,0 +1,180 @@
+{
+ "task": "stack_blocks",
+ "mode": "replay",
+ "episodes": [
+  {
+   "episode": "20260912T223650_0_4205.npz",
+   "steps": 4205,
+   "recorded_steps": 4205,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "bit_exact": true,
+   "first_departure_step": null,
+   "max_qpos_err": 0.0,
+   "max_state_err": 0.0
+  },
+  {
+   "episode": "20260912T223906_1_3979.npz",
+   "steps": 3979,
+   "recorded_steps": 3979,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "bit_exact": true,
+   "first_departure_step": null,
+   "max_qpos_err": 0.0,
+   "max_state_err": 0.0
+  },
+  {
+   "episode": "20260912T224120_2_3821.npz",
+   "steps": 3821,
+   "recorded_steps": 3821,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "bit_exact": true,
+   "first_departure_step": null,
+   "max_qpos_err": 0.0,
+   "max_state_err": 0.0
+  },
+  {
+   "episode": "20260912T224251_3_3947.npz",
+   "steps": 3947,
+   "recorded_steps": 3947,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "bit_exact": true,
+   "first_departure_step": null,
+   "max_qpos_err": 0.0,
+   "max_state_err": 0.0
+  },
+  {
+   "episode": "20260912T224423_4_4171.npz",
+   "steps": 4171,
+   "recorded_steps": 4171,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "bit_exact": true,
+   "first_departure_step": null,
+   "max_qpos_err": 0.0,
+   "max_state_err": 0.0
+  },
+  {
+   "episode": "20260912T224555_5_4371.npz",
+   "steps": 4371,
+   "recorded_steps": 4371,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "bit_exact": true,
+   "first_departure_step": null,
+   "max_qpos_err": 0.0,
+   "max_state_err": 0.0
+  },
+  {
+   "episode": "20260912T224722_6_4102.npz",
+   "steps": 4102,
+   "recorded_steps": 4102,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "bit_exact": true,
+   "first_departure_step": null,
+   "max_qpos_err": 0.0,
+   "max_state_err": 0.0
+  },
+  {
+   "episode": "20260912T224849_7_4124.npz",
+   "steps": 4124,
+   "recorded_steps": 4124,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "bit_exact": true,
+   "first_departure_step": null,
+   "max_qpos_err": 0.0,
+   "max_state_err": 0.0
+  },
+  {
+   "episode": "20260912T225100_8_3542.npz",
+   "steps": 3542,
+   "recorded_steps": 3542,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "bit_exact": true,
+   "first_departure_step": null,
+   "max_qpos_err": 0.0,
+   "max_state_err": 0.0
+  },
+  {
+   "episode": "20260912T225220_9_3664.npz",
+   "steps": 3664,
+   "recorded_steps": 3664,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "bit_exact": true,
+   "first_departure_step": null,
+   "max_qpos_err": 0.0,
+   "max_state_err": 0.0
+  }
+ ],
+ "success_rate": 1.0,
+ "bit_exact": 10,
+ "episode_length": 87500,
+ "episode_length_source": "task_protocol",
+ "episode_length_protocol": 87500,
+ "episode_length_collected": 60000,
+ "budget_provenance": "data_derived",
+ "deterministic_reset": true,
+ "protocol_violations": [],
+ "substrate_fingerprint": {
+  "substrate_version": "bigym2-mj381-v1",
+  "mujoco_version": "3.8.1",
+  "task": "stack_blocks",
+  "initialization_profile": "upstream",
+  "robot_model": "g1_dex1",
+  "lowerbody_backend": "groot_wbc_g1",
+  "success_hold_seconds": 1.0,
+  "lowerbody_base_action_mode": "lowerbody_cmd",
+  "lowerbody_init_stance": "keyframe",
+  "lowerbody_pitch_cmd": true,
+  "g1_passive_base_tilt": true,
+  "control_step_seconds": 0.02,
+  "lowerbody_checkpoint": null,
+  "lowerbody_weights": {
+   "GR00T-WholeBodyControl-Balance.onnx": "f645da599d4ca3d29ed273c8f4712620bb680d34977469ca3aeabe5bb9631c18",
+   "GR00T-WholeBodyControl-Walk.onnx": "7c82255b6905ffcc4468fa7f8ddcf7b70db168cf1042107ccab887cb6a8e5407"
+  },
+  "reset_warmup_steps": 200,
+  "reach_tolerance": null,
+  "compiled_model_sha256": "95c7821f4a1e51705f65a79435534e8b3a26a17e5500d5d5ca9496b725c644c7",
+  "bigym_version": "1.0.0",
+  "bigym_git_sha": "d71501359b21",
+  "episode_length": 87500,
+  "demo_down_sample_rate": 10,
+  "action_representation": "absolute",
+  "upper_delta_scale_rad": null,
+  "action_dim": 21,
+  "low_dim_component_slices": {
+   "proprioception": [
+    0,
+    50
+   ],
+   "proprioception_grippers": [
+    50,
+    52
+   ],
+   "proprioception_floating_base": [
+    52,
+    56
+   ]
+  },
+  "solver": 2,
+  "contact_signature": "e1a15748e0af3299"
+ }
+}

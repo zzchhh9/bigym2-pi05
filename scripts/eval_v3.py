@@ -35,10 +35,9 @@ lets the env terminate. ``--max-steps`` is only a diagnostic
 override. Reset is ``deterministic_reset=True``: a fixed 620000+i seed is
 not the same as aligned controller state.
 
---replay ignores the policy and pushes the demo's own recorded actions through
-this exact env. On the public release 7-10 of 10 demos per task succeed (the
-contact model differs from the one the demos were recorded with); a wrong state
-layout shows as max|state-dataset| of order 1 from the first steps.
+--replay ignores the policy and replays the demos on this exact env the way
+bigym.loco.demos.success_hold.latch_step does, and records whether each step
+lands on the recorded full_qpos and observation bit for bit.
 
 The language instruction is the SFT dataset string (tasks.parquet): the
 policy must see the sentence it was trained on.
@@ -290,58 +289,47 @@ def main():
     )
     print(f"{tag} prompt={prompt!r} source={prompt_source}", flush=True)
 
-    if a.replay:                                   # (gate) demo actions, no policy
-        # Demos start at the VR ENGAGE moment (post reset-warmup), not at a bare
-        # reset, so the recorded engage snapshot must be restored first or the
-        # actions are replayed from the wrong state and score 0 — which says
-        # nothing about the eval path.
-        import pyarrow.parquet as pq, glob
+    if a.replay:                                   # (check) demo actions, no policy
+        # The official replay (bigym.loco.demos.success_hold.latch_step): read the
+        # demos back in collector order with the public loader (row t holds the
+        # action that PRODUCED obs t; the export stores the action taken FROM
+        # obs t, action alignment v2), restore the engage snapshot, map the
+        # normalized actions through the demos' action_stats, and step. Every
+        # step must land on the recorded full_qpos bit for bit, and the permuted
+        # observation must equal the recorded one (this checks the v3 layout).
+        from bigym.loco.demos.dataset import load_episodes
         from bigym.loco.demos.success_hold import restore_engage_state
-        root = LEROBOT / f"{a.task}_abs"
-        snaps = json.loads((root / "meta" / "episode_init_states.json").read_text())["episodes"]
-
-        def arr(d, key, dt):
-            v = d[key]
-            return np.asarray(v["data"], dt).reshape(v["shape"])
-
-        acts, states, eidx = [], [], []
-        for pf in sorted(glob.glob(str(root / "data" / "**" / "*.parquet"), recursive=True)):
-            t = pq.read_table(pf)
-            acts.append(np.asarray(t["action"].to_pylist(), np.float32))
-            states.append(np.asarray(t["observation.state"].to_pylist(), np.float32))
-            eidx.append(np.asarray(t["episode_index"].to_pylist()))
-        acts, states, eidx = np.concatenate(acts), np.concatenate(states), np.concatenate(eidx)
-
+        lo, hi = env.demo_envelope
+        env.set_action_stats(lo, hi)
+        episodes = load_episodes(NATIVE / a.task, a.episodes, decode_images=False)
         eps = []
-        for ep in sorted({int(k) for k in snaps})[:a.episodes]:
-            sn = snaps[str(ep)]["arrays"]
-            A, S = acts[eidx == ep], states[eidx == ep]
-            dtype = lambda k: (np.int64 if k == "seed" else
-                               np.float32 if k.startswith("lb_state.") else np.float64)
-            restore_engage_state(env, {k: arr(sn, k, dtype(k)) for k in sn})
-            mx, k, worst = 0.0, 0, 0.0
-            for k in range(1, len(A)):
-                ts = env.step(to_env_action(env, A[k]))
-                # observation.state of row k is the observation the action of
-                # row k was taken from, so the state after that action is row
-                # k+1. Matching it checks the v3 layout on this BiGym. The
-                # first steps after the engage restore differ by up to 0.1
-                # (grippers); report the last 90% of the episode.
-                if k + 1 < len(S) and k >= len(A) // 10:
-                    s_env = SPEC.permute_state(np.asarray(ts.low_dim_obs, np.float32))
-                    worst = max(worst, float(np.abs(s_env - S[k + 1]).max()))
-                mx = max(mx, float(ts.reward or 0.0))
-                if ts.last(): break
+        for name, ep in episodes:
+            data = restore_engage_state(env, ep)
+            act = np.asarray(ep["action"], np.float32)
+            qpos = np.asarray(ep["full_qpos"]); obs = np.asarray(ep["low_dim_obs"], np.float32)
+            first_off, worst_q, worst_s, k = None, 0.0, 0.0, 0
+            for k in range(1, len(act)):
+                ts = env.step(act[k])
+                dq = float(np.abs(data.qpos - qpos[k]).max())
+                ds = float(np.abs(SPEC.permute_state(np.asarray(ts.low_dim_obs, np.float32))
+                                  - SPEC.permute_state(obs[k])).max())
+                if first_off is None and (dq > 0 or ds > 0):
+                    first_off = k
+                worst_q, worst_s = max(worst_q, dq), max(worst_s, ds)
+                if env.episode_succeeded() or ts.last():
+                    break
             success, termination, fell = _outcome(env)
-            eps.append({"episode": ep, "steps": k, "max_reward": mx,
+            eps.append({"episode": name, "steps": k, "recorded_steps": len(act) - 1,
                         "success": success, "termination": termination, "fell": fell,
-                        "max_state_err": worst})
-            print(f"{tag} replay ep{ep}: steps={k} reward={mx} end={termination} "
-                  f"max|state-dataset|={worst:.2e}", flush=True)
+                        "bit_exact": first_off is None, "first_departure_step": first_off,
+                        "max_qpos_err": worst_q, "max_state_err": worst_s})
+            print(f"{tag} replay {name}: steps={k}/{len(act) - 1} success={success} "
+                  f"bit_exact={first_off is None} max|qpos|={worst_q:.1e} "
+                  f"max|state|={worst_s:.1e}", flush=True)
             out.write_text(json.dumps({
                 "task": a.task, "mode": "replay", "episodes": eps,
-                "prompt": prompt, "prompt_source": prompt_source,
                 "success_rate": sum(e["success"] for e in eps)/len(eps),
+                "bit_exact": sum(e["bit_exact"] for e in eps),
                 **budget,
                 "substrate_fingerprint": _jsonable(env.substrate_fingerprint()),
             }, indent=1))

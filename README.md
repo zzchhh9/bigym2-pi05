@@ -107,9 +107,9 @@ hf download SWIRL-Lab/bigym-g1-native60 --repo-type dataset \
 python scripts/export_v3.py $TASK
 python scripts/make_delta_v3.py $TASK
 
-# 3. Check: replay the demos through the eval env. On the public release not
-#    every demo succeeds (7-10 of 10 in our runs; see "Substrate"). A wrong
-#    state layout shows as max|state-dataset| of order 1 from the first steps.
+# 3. Check: replay the demos through the eval env, as the public
+#    bigym.loco.demos.success_hold.latch_step does. Every step must land on the
+#    recorded qpos and observation bit for bit, and every demo must succeed.
 python scripts/eval_v3.py --task $TASK --replay --episodes 10 --out work/replay_$TASK.json
 
 # 4. Train (6 GPUs x batch 8, 30000 steps, a checkpoint every 1000 steps).
@@ -155,22 +155,23 @@ We ran `scripts/` from a clean environment (public BiGym2 `d715013`, LeRobot `b1
 the public dataset at revision `4c3e441`) on H20 GPUs, on 2026-10-28 and 2026-10-29. For each
 of the nine tasks: export and delta stats against the stats saved in our checkpoint, 10
 replayed demos, and our 30k-step checkpoint on seeds 620000-620049. The raw outputs are in
-`results/public_release/`. These files come from `eval_v3.py` at commit `3a2906f`, which
-counted success as reward 1.0 and clipped through the demo envelope by setting the env's
-action stats. The current version uses `is_success` and leaves the env's stats alone; the
-actions it sends are the same, and none of the 450 episodes had a success with a fall.
+`results/public_release/` (stats, policy evaluation) and `results/replay/` (replay). The
+evaluation files come from `eval_v3.py` at commit `3a2906f`, which counted success as
+reward 1.0 and clipped through the demo envelope by setting the env's action stats. The
+current version uses `is_success` and leaves the env's stats alone; the actions it sends
+are the same, and none of the 450 episodes had a success with a fall.
 
-| Task | Stats vs our checkpoint | Replay | 30k ckpt, public env | 30k ckpt, paper run |
+| Task | Stats vs our checkpoint | Replay, bit-exact | 30k ckpt, public env | 30k ckpt, paper run |
 |---|---|---|---|---|
 | reach_target_multi_modal | equal | 10/10 | 47/50 | 45/50 |
-| reach_target_dual | equal | 9/10 | 28/50 | 28/50 |
-| drawer_top_close | equal | 9/10 | 50/50 | 50/50 |
+| reach_target_dual | equal | 10/10 | 28/50 | 28/50 |
+| drawer_top_close | equal | 10/10 | 50/50 | 50/50 |
 | drawer_top_open | equal | 10/10 | 48/50 | 48/50 |
 | move_plate | equal | 10/10 | 33/50 | 32/50 |
-| move_two_plates | equal | 9/10 | 34/50 | 32/50 |
-| dishwasher_load_cups | differ (45998 vs 46027 frames) | 7/10 | 48/50 | 45/50 |
+| move_two_plates | equal | 10/10 | 34/50 | 32/50 |
+| dishwasher_load_cups | differ (45998 vs 46027 frames) | 10/10 | 48/50 | 45/50 |
 | dishwasher_close | equal | 10/10 | 36/50 | 40/50 |
-| pick_box | differ (100928 vs 101290 frames) | 7/10 | 12/50 | 7/50 |
+| pick_box | differ (100928 vs 101290 frames) | 10/10 | 12/50 | 7/50 |
 
 - "equal" means the action and state quantiles, mean, std, min and max are identical to the
   normaliser stats in our checkpoint (difference 0). For `dishwasher_load_cups` and
@@ -187,31 +188,27 @@ actions it sends are the same, and none of the 450 episodes had a success with a
 The public dataset has 20 tasks; the paper reports π0.5 on nine. The other eleven run with
 the same recipe and the same scripts, unchanged:
 
-| Task | Layout | Frames (60 demos) | Episode budget | Replay on public env |
+| Task | Layout | Frames (60 demos) | Episode budget | Replay, bit-exact |
 |---|---|---|---|---|
 | reach_target_single | 20/50 | 12085 | 9000 | 10/10 |
 | wall_cupboard_open | 21/56 | 35650 | 14500 | 10/10 |
-| wall_cupboard_close | 21/56 | 35402 | 17000 | 7/10 |
-| flip_cup | 21/56 | 36443 | 18500 | 7/10 |
-| flip_cutlery | 21/56 | 44158 | 19500 | 8/10 |
-| dishwasher_load_cutlery | 21/56 | 57541 | 26500 | 4/10 |
-| put_cups | 21/56 | 61124 | 30000 | 9/10 |
-| dishwasher_load_plates | 21/56 | 74885 | 31500 | 9/10 |
-| sandwich_remove | 21/56 | 65863 | 31500 | 7/10 |
-| saucepan_to_hob | 21/56 | 91205 | 46500 | 4/10 |
-| stack_blocks | 21/56 | 231636 | 87500 | 1/10 |
+| wall_cupboard_close | 21/56 | 35402 | 17000 | 10/10 |
+| flip_cup | 21/56 | 36443 | 18500 | 10/10 |
+| flip_cutlery | 21/56 | 44158 | 19500 | 10/10 |
+| dishwasher_load_cutlery | 21/56 | 57541 | 26500 | 10/10 |
+| put_cups | 21/56 | 61124 | 30000 | 10/10 |
+| dishwasher_load_plates | 21/56 | 74885 | 31500 | 10/10 |
+| sandwich_remove | 21/56 | 65863 | 31500 | 10/10 |
+| saucepan_to_hob | 21/56 | 91205 | 46500 | 10/10 |
+| stack_blocks | 21/56 | 231636 | 87500 | 10/10 |
 
 - Layout: the ten new entries of `v3_layout.json` come from `infer_layout.py`. All ten
   pitch tasks have the same layout as `dishwasher_close`. `infer_layout.py --check`
   re-derives all 20 entries on the public env and matches each one.
 - Every budget is `data_derived` and equals the demos' `recommended_episode_length`, so
-  `export_v3.py` accepts every task. Raw outputs: `results/release_check/`.
+  `export_v3.py` accepts every task. Raw outputs: `results/replay/`, `results/release_check/`.
 - The same recipe means 30k steps for every task, as in the paper. A task with more frames
   sees fewer epochs: about 6 for `stack_blocks`, against about 38 for `move_plate`.
-- Replay success is low for the long tasks (`stack_blocks` 1/10, `saucepan_to_hob` and
-  `dishwasher_load_cutlery` 4/10): those demos drift off on the public env's contact model
-  (see [Substrate](#substrate)). A policy trained on them is still evaluated on the public
-  env, as every result on the release is.
 
 To run them on one 8-GPU machine:
 
@@ -241,11 +238,17 @@ task budgets and official configurations are the same. `eval_v3.py` checks the o
 configuration against the demonstrations' `source_metadata.json` and stops on any
 difference.
 
-The public demonstrations do not replay bit-exactly on the public env. For `move_plate`,
-`substrate_fingerprint()["contact_signature"]` is `36156d4845f2db32` on BiGym2 `d715013`
-and `a3972624f79d3e98` in the demos' `source_metadata.json`. The replayed `qpos` is off by
-about 3e-3 after the first step. Of 10 replayed demos per task, 7 to 10 succeed (table
-above).
+The public demonstrations replay bit for bit on the public env: on all 20 tasks, 10 of 10
+demos land on the recorded `qpos` and observation at every step and latch success on the
+recorded last step (`results/replay/`).
+
+A correction: an earlier version of this README said that the demos drift on the public
+env and that 1 to 10 of 10 replay successfully. That was a bug in our replay, not in the
+release. The export stores, in frame k, the action taken *from* observation k (action
+alignment v2, `meta/alignment.json`); our replay read it as the action that *produced*
+observation k, so it applied every action one step early. Training and policy evaluation
+were not affected: they pair observation k with the action taken from it, and our training
+data equals the public data (see the stats column above).
 
 ## Files
 
@@ -260,9 +263,10 @@ above).
 | `scripts/run_tasks.py` | Train and evaluate a list of tasks with the paper's recipe on one 8-GPU machine (resumable) |
 | `configs/*_train_config.json` | Saved `train_config.json` of the nine paper runs at 30k steps (paths are our cluster's) |
 | `as_run/` | The files that ran, unchanged, incl. the nine-task orchestrator |
-| `results/public_release/` | Raw output of the public-release check: `<task>_prep.json` (stats comparison), `<task>_replay.json`, `<task>_030000_w<k>.json` (one shard of the 50 seeds each) |
+| `results/public_release/` | Raw output of the public-release check: `<task>_prep.json` (stats comparison), `<task>_030000_w<k>.json` (one shard of the 50 seeds each) |
+| `results/replay/` | Bit-exact replay check of all 20 tasks, 10 demos each |
 | `requirements_public_validated.txt` | Package versions of the public-release check |
-| `results/release_check/` | Release-only check of the current `eval_v3.py`: replay of the eleven other tasks, one 5-episode shard of each paper task with `protocol_violations` recorded |
+| `results/release_check/` | Release-only check of the current `eval_v3.py`: one 5-episode shard of each paper task with `protocol_violations` recorded |
 
 ## Licence
 
