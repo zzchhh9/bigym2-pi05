@@ -62,12 +62,16 @@ one on the success rate.
 | Python / torch / transformers | 3.12 / 2.9.0 / 5.5.x |
 
 `as_run/requirements_pi05_freeze.txt` is the full `pip freeze` of the training environment.
+`requirements_public_validated.txt` is the environment that ran the checks under
+"Check on the public release".
 
 ## Install
 
 ```bash
 git clone https://github.com/swirl-uk/BiGym2.git
-git clone https://github.com/huggingface/lerobot.git && git -C lerobot checkout b1bf24f5
+# Skip the LFS test artefacts; a full LFS checkout of lerobot can hang.
+GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/huggingface/lerobot.git
+git -C lerobot checkout b1bf24f5
 uv venv -p 3.12 .venv
 uv pip install -p .venv/bin/python torch==2.9.0 torchvision==0.24.0
 uv pip install -p .venv/bin/python -e ./BiGym2 -e "./lerobot[pi,dataset,training]"
@@ -142,7 +146,8 @@ and the same checkpoint does not give the same per-seed outcomes twice.
 We ran `scripts/` from a clean environment (public BiGym2 `d715013`, LeRobot `b1bf24f5`,
 the public dataset at revision `4c3e441`) on H20 GPUs, on 2026-10-28 and 2026-10-29. For each
 of the nine tasks: export and delta stats against the stats saved in our checkpoint, 10
-replayed demos, and our 30k-step checkpoint on seeds 620000-620049.
+replayed demos, and our 30k-step checkpoint on seeds 620000-620049. The raw outputs are in
+`results/public_release/`.
 
 | Task | Stats vs our checkpoint | Replay | 30k ckpt, public env | 30k ckpt, paper run |
 |---|---|---|---|---|
@@ -195,6 +200,8 @@ above).
 | `scripts/eval_v3.py` | Closed-loop evaluation and the replay gate |
 | `configs/*_train_config.json` | Saved `train_config.json` of the nine paper runs at 30k steps (paths are our cluster's) |
 | `as_run/` | The files that ran, unchanged, incl. the nine-task orchestrator |
+| `results/public_release/` | Raw output of the public-release check: `<task>_prep.json` (stats comparison), `<task>_replay.json`, `<task>_030000_w<k>.json` (one shard of the 50 seeds each) |
+| `requirements_public_validated.txt` | Package versions of the public-release check |
 
 ## Licence
 

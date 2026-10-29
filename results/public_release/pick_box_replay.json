@@ -1,0 +1,150 @@
+{
+ "task": "pick_box",
+ "mode": "replay",
+ "episodes": [
+  {
+   "episode": 0,
+   "steps": 1763,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.7156219482421875
+  },
+  {
+   "episode": 1,
+   "steps": 1623,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.7307314872741699
+  },
+  {
+   "episode": 2,
+   "steps": 1841,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 1.289960503578186
+  },
+  {
+   "episode": 3,
+   "steps": 1561,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "terminated",
+   "fell": false,
+   "max_state_err": 1.0501277446746826
+  },
+  {
+   "episode": 4,
+   "steps": 1975,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "terminated",
+   "fell": false,
+   "max_state_err": 0.981645941734314
+  },
+  {
+   "episode": 5,
+   "steps": 1568,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.7738223671913147
+  },
+  {
+   "episode": 6,
+   "steps": 1588,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.7747400403022766
+  },
+  {
+   "episode": 7,
+   "steps": 1557,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.4712768793106079
+  },
+  {
+   "episode": 8,
+   "steps": 1615,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "terminated",
+   "fell": false,
+   "max_state_err": 2.5936551094055176
+  },
+  {
+   "episode": 9,
+   "steps": 1689,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 1.0369826555252075
+  }
+ ],
+ "prompt": "Pick up the box from the side table and place it on the counter.",
+ "prompt_source": "lerobot_tasks_parquet",
+ "success_rate": 0.7,
+ "episode_length": 44000,
+ "episode_length_source": "task_protocol",
+ "episode_length_protocol": 44000,
+ "episode_length_collected": 60000,
+ "budget_provenance": "data_derived",
+ "deterministic_reset": true,
+ "substrate_fingerprint": {
+  "substrate_version": "bigym2-mj381-v1",
+  "mujoco_version": "3.8.1",
+  "task": "pick_box",
+  "initialization_profile": "upstream",
+  "robot_model": "g1_dex1",
+  "lowerbody_backend": "groot_wbc_g1",
+  "success_hold_seconds": 1.0,
+  "lowerbody_base_action_mode": "lowerbody_cmd",
+  "lowerbody_init_stance": "keyframe",
+  "lowerbody_pitch_cmd": true,
+  "g1_passive_base_tilt": true,
+  "control_step_seconds": 0.02,
+  "lowerbody_checkpoint": null,
+  "lowerbody_weights": {
+   "GR00T-WholeBodyControl-Balance.onnx": "f645da599d4ca3d29ed273c8f4712620bb680d34977469ca3aeabe5bb9631c18",
+   "GR00T-WholeBodyControl-Walk.onnx": "7c82255b6905ffcc4468fa7f8ddcf7b70db168cf1042107ccab887cb6a8e5407"
+  },
+  "reset_warmup_steps": 200,
+  "reach_tolerance": null,
+  "compiled_model_sha256": "b505dd1bb32bada7052fe81cb22cdcddc8e9dba712eb73a1be3e053fb7cf9ae8",
+  "bigym_version": "1.0.0",
+  "bigym_git_sha": "d71501359b21",
+  "episode_length": 44000,
+  "demo_down_sample_rate": 10,
+  "action_representation": "absolute",
+  "upper_delta_scale_rad": null,
+  "action_dim": 21,
+  "low_dim_component_slices": {
+   "proprioception": [
+    0,
+    50
+   ],
+   "proprioception_grippers": [
+    50,
+    52
+   ],
+   "proprioception_floating_base": [
+    52,
+    56
+   ]
+  },
+  "solver": 2,
+  "contact_signature": "51e3684c96b03859"
+ }
+}

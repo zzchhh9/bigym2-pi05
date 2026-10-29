@@ -1,0 +1,150 @@
+{
+ "task": "move_plate",
+ "mode": "replay",
+ "episodes": [
+  {
+   "episode": 0,
+   "steps": 585,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.09313929826021194
+  },
+  {
+   "episode": 1,
+   "steps": 680,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.034753382205963135
+  },
+  {
+   "episode": 2,
+   "steps": 601,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.08452273905277252
+  },
+  {
+   "episode": 3,
+   "steps": 741,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.06827031075954437
+  },
+  {
+   "episode": 4,
+   "steps": 613,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.09083680063486099
+  },
+  {
+   "episode": 5,
+   "steps": 668,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.04865157604217529
+  },
+  {
+   "episode": 6,
+   "steps": 729,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.14298491179943085
+  },
+  {
+   "episode": 7,
+   "steps": 725,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.2436579465866089
+  },
+  {
+   "episode": 8,
+   "steps": 653,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.0743715912103653
+  },
+  {
+   "episode": 9,
+   "steps": 628,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.10430798679590225
+  }
+ ],
+ "prompt": "Move the plate between two draining racks.",
+ "prompt_source": "lerobot_tasks_parquet",
+ "success_rate": 1.0,
+ "episode_length": 17000,
+ "episode_length_source": "task_protocol",
+ "episode_length_protocol": 17000,
+ "episode_length_collected": 60000,
+ "budget_provenance": "data_derived",
+ "deterministic_reset": true,
+ "substrate_fingerprint": {
+  "substrate_version": "bigym2-mj381-v1",
+  "mujoco_version": "3.8.1",
+  "task": "move_plate",
+  "initialization_profile": "upstream",
+  "robot_model": "g1_dex1",
+  "lowerbody_backend": "groot_wbc_g1",
+  "success_hold_seconds": 1.0,
+  "lowerbody_base_action_mode": "lowerbody_cmd",
+  "lowerbody_init_stance": "keyframe",
+  "lowerbody_pitch_cmd": false,
+  "g1_passive_base_tilt": true,
+  "control_step_seconds": 0.02,
+  "lowerbody_checkpoint": null,
+  "lowerbody_weights": {
+   "GR00T-WholeBodyControl-Balance.onnx": "f645da599d4ca3d29ed273c8f4712620bb680d34977469ca3aeabe5bb9631c18",
+   "GR00T-WholeBodyControl-Walk.onnx": "7c82255b6905ffcc4468fa7f8ddcf7b70db168cf1042107ccab887cb6a8e5407"
+  },
+  "reset_warmup_steps": 200,
+  "reach_tolerance": null,
+  "compiled_model_sha256": "07f4ee09a22fc09dbf6e4b4b017c1576e1c5bb2544b536990098960e801ed63d",
+  "bigym_version": "1.0.0",
+  "bigym_git_sha": "d71501359b21",
+  "episode_length": 17000,
+  "demo_down_sample_rate": 10,
+  "action_representation": "absolute",
+  "upper_delta_scale_rad": null,
+  "action_dim": 20,
+  "low_dim_component_slices": {
+   "proprioception": [
+    0,
+    44
+   ],
+   "proprioception_grippers": [
+    44,
+    46
+   ],
+   "proprioception_floating_base": [
+    46,
+    50
+   ]
+  },
+  "solver": 2,
+  "contact_signature": "36156d4845f2db32"
+ }
+}

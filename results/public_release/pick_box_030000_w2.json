@@ -1,0 +1,109 @@
+{
+ "task": "pick_box",
+ "ckpt": "pick_box_delta/checkpoints/030000/pretrained_model",
+ "relative": true,
+ "n_action_steps": 16,
+ "max_steps_override": null,
+ "step_cap": 4400,
+ "prompt": "Pick up the box from the side table and place it on the counter.",
+ "prompt_source": "lerobot_tasks_parquet",
+ "episode_length": 44000,
+ "episode_length_source": "task_protocol",
+ "episode_length_protocol": 44000,
+ "episode_length_collected": 60000,
+ "budget_provenance": "data_derived",
+ "deterministic_reset": true,
+ "substrate_fingerprint": {
+  "substrate_version": "bigym2-mj381-v1",
+  "mujoco_version": "3.8.1",
+  "task": "pick_box",
+  "initialization_profile": "upstream",
+  "robot_model": "g1_dex1",
+  "lowerbody_backend": "groot_wbc_g1",
+  "success_hold_seconds": 1.0,
+  "lowerbody_base_action_mode": "lowerbody_cmd",
+  "lowerbody_init_stance": "keyframe",
+  "lowerbody_pitch_cmd": true,
+  "g1_passive_base_tilt": true,
+  "control_step_seconds": 0.02,
+  "lowerbody_checkpoint": null,
+  "lowerbody_weights": {
+   "GR00T-WholeBodyControl-Balance.onnx": "f645da599d4ca3d29ed273c8f4712620bb680d34977469ca3aeabe5bb9631c18",
+   "GR00T-WholeBodyControl-Walk.onnx": "7c82255b6905ffcc4468fa7f8ddcf7b70db168cf1042107ccab887cb6a8e5407"
+  },
+  "reset_warmup_steps": 200,
+  "reach_tolerance": null,
+  "compiled_model_sha256": "b505dd1bb32bada7052fe81cb22cdcddc8e9dba712eb73a1be3e053fb7cf9ae8",
+  "bigym_version": "1.0.0",
+  "bigym_git_sha": "d71501359b21",
+  "episode_length": 44000,
+  "demo_down_sample_rate": 10,
+  "action_representation": "absolute",
+  "upper_delta_scale_rad": null,
+  "action_dim": 21,
+  "low_dim_component_slices": {
+   "proprioception": [
+    0,
+    50
+   ],
+   "proprioception_grippers": [
+    50,
+    52
+   ],
+   "proprioception_floating_base": [
+    52,
+    56
+   ]
+  },
+  "solver": 2,
+  "contact_signature": "51e3684c96b03859"
+ },
+ "episodes": [
+  {
+   "seed": 620002,
+   "steps": 4400,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "timeout",
+   "fell": false,
+   "wall_s": 564.6
+  },
+  {
+   "seed": 620012,
+   "steps": 1845,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "wall_s": 244.1
+  },
+  {
+   "seed": 620022,
+   "steps": 4400,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "timeout",
+   "fell": false,
+   "wall_s": 627.4
+  },
+  {
+   "seed": 620032,
+   "steps": 4400,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "timeout",
+   "fell": false,
+   "wall_s": 498.4
+  },
+  {
+   "seed": 620042,
+   "steps": 1554,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "wall_s": 149.9
+  }
+ ],
+ "success_rate": 0.4
+}

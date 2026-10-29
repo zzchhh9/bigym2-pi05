@@ -1,0 +1,109 @@
+{
+ "task": "drawer_top_close",
+ "ckpt": "drawer_top_close_delta/checkpoints/030000/pretrained_model",
+ "relative": true,
+ "n_action_steps": 16,
+ "max_steps_override": null,
+ "step_cap": 850,
+ "prompt": "Close the top drawer of the kitchen cabinet.",
+ "prompt_source": "lerobot_tasks_parquet",
+ "episode_length": 8500,
+ "episode_length_source": "task_protocol",
+ "episode_length_protocol": 8500,
+ "episode_length_collected": 60000,
+ "budget_provenance": "data_derived",
+ "deterministic_reset": true,
+ "substrate_fingerprint": {
+  "substrate_version": "bigym2-mj381-v1",
+  "mujoco_version": "3.8.1",
+  "task": "drawer_top_close",
+  "initialization_profile": "g1_id_v1",
+  "robot_model": "g1_dex1",
+  "lowerbody_backend": "groot_wbc_g1",
+  "success_hold_seconds": 1.0,
+  "lowerbody_base_action_mode": "lowerbody_cmd",
+  "lowerbody_init_stance": "keyframe",
+  "lowerbody_pitch_cmd": false,
+  "g1_passive_base_tilt": true,
+  "control_step_seconds": 0.02,
+  "lowerbody_checkpoint": null,
+  "lowerbody_weights": {
+   "GR00T-WholeBodyControl-Balance.onnx": "f645da599d4ca3d29ed273c8f4712620bb680d34977469ca3aeabe5bb9631c18",
+   "GR00T-WholeBodyControl-Walk.onnx": "7c82255b6905ffcc4468fa7f8ddcf7b70db168cf1042107ccab887cb6a8e5407"
+  },
+  "reset_warmup_steps": 200,
+  "reach_tolerance": null,
+  "compiled_model_sha256": "988da7dad065e5117a3503ea2c73dd0da5a7e3e6ba7cb8f4b38852cf41cf86ae",
+  "bigym_version": "1.0.0",
+  "bigym_git_sha": "d71501359b21",
+  "episode_length": 8500,
+  "demo_down_sample_rate": 10,
+  "action_representation": "absolute",
+  "upper_delta_scale_rad": null,
+  "action_dim": 20,
+  "low_dim_component_slices": {
+   "proprioception": [
+    0,
+    44
+   ],
+   "proprioception_grippers": [
+    44,
+    46
+   ],
+   "proprioception_floating_base": [
+    46,
+    50
+   ]
+  },
+  "solver": 2,
+  "contact_signature": "95b125916c0381bb"
+ },
+ "episodes": [
+  {
+   "seed": 620005,
+   "steps": 242,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "wall_s": 26.6
+  },
+  {
+   "seed": 620015,
+   "steps": 257,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "wall_s": 27.8
+  },
+  {
+   "seed": 620025,
+   "steps": 246,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "wall_s": 26.2
+  },
+  {
+   "seed": 620035,
+   "steps": 235,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "wall_s": 25.4
+  },
+  {
+   "seed": 620045,
+   "steps": 247,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "wall_s": 26.9
+  }
+ ],
+ "success_rate": 1.0
+}
