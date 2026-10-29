@@ -11,7 +11,10 @@ trained at two lengths.
 Runs train one after another; a finished run is scored on the eval GPUs while
 the next one trains, and on --final-eval-gpus too once all training is done.
 The script can be stopped and started again: finished checkpoints and complete
-eval shards are kept, and a trainer that died resumes from its newest checkpoint.
+eval shards are kept, a trainer that is still running is waited for (not started
+twice), and a trainer that died resumes from its newest checkpoint. A file named
+STOP in --eval-out stops the script from starting further training; evaluation
+of the runs already trained goes on.
 
     python scripts/run_tasks.py flip_cup stack_blocks stack_blocks:72000 \\
         --train-gpus 0,1,2,3,4,5 --eval-gpus 6,7
@@ -131,12 +134,36 @@ def prepare(task):
         subprocess.run([PY, str(HERE / script), task], check=True)
 
 
+def running_trainer(out):
+    """PID of a torchrun launcher already training into ``out``, else None."""
+    for proc in Path("/proc").glob("[0-9]*"):
+        try:
+            args = (proc / "cmdline").read_bytes().decode(errors="replace").split("\0")
+        except OSError:
+            continue
+        if "torch.distributed.run" in args and any(
+                a == f"--output_dir={out}" or a.startswith(f"--config_path={out}/") for a in args):
+            return int(proc.name)
+    return None
+
+
+def wait_trainer(pid, ckdir, keep_from):
+    while Path(f"/proc/{pid}").exists():
+        prune(ckdir, keep_from); time.sleep(300)
+    prune(ckdir, keep_from)
+
+
 def train(runs, run, gpus):
     out = runs / run.name; ckdir = out / "checkpoints"
     for attempt in range(4):
         if run.steps in steps_on_disk(ckdir):
             log(f"TRAIN DONE {run.name}")
             return True
+        pid = running_trainer(out)
+        if pid:
+            log(f"TRAIN {run.name}: waiting for the trainer already running (pid {pid})")
+            wait_trainer(pid, ckdir, run.eval_steps[0])
+            continue
         resume = "1" if steps_on_disk(ckdir) else "0"
         if resume == "0" and out.exists():
             shutil.rmtree(out)                 # died before its first checkpoint
@@ -149,9 +176,7 @@ def train(runs, run, gpus):
             return False
         pid = int(m.group(1)); logline = next((l for l in r.stdout.splitlines() if "log:" in l), "")
         log(f"TRAIN {run.name} pid {pid} resume={resume} attempt {attempt} {logline.strip()}")
-        while Path(f"/proc/{pid}").exists():
-            prune(ckdir, run.eval_steps[0]); time.sleep(300)
-        prune(ckdir, run.eval_steps[0])
+        wait_trainer(pid, ckdir, run.eval_steps[0])
         log(f"TRAIN EXIT {run.name}: checkpoints {steps_on_disk(ckdir)[-3:]}")
     return run.steps in steps_on_disk(ckdir)
 
@@ -186,19 +211,27 @@ def main():
     runs, out_dir = Path(a.runs), Path(a.eval_out)
     runs.mkdir(parents=True, exist_ok=True); out_dir.mkdir(parents=True, exist_ok=True)
     pool = EvalPool([int(g) for g in a.eval_gpus.split(",")], a.eval_per_gpu)
-    ex = ThreadPoolExecutor(64); futs = {}
+    ex = ThreadPoolExecutor(64); reporters, done = [], []
+
+    def report(run, fs):
+        log(f"EVAL DONE {run.name} failed_shards={sum(f.result() for f in fs)}")
+        res = summary(out_dir, run); done.append(res)
+        (out_dir / f"{run.name}_summary.json").write_text(json.dumps(res, indent=1))
+
     for run in map(Run.parse, a.runs_):
+        if (out_dir / "STOP").exists():
+            log(f"STOP file found: no more training ({run.name} and later are skipped)"); break
         prepare(run.task)
         if not train(runs, run, a.train_gpus):
             log(f"GIVE UP training {run.name}"); continue
-        futs[run] = [ex.submit(eval_shard, pool, runs, out_dir, run, s, w)
-                     for s in run.eval_steps for w in range(NSHARD)]
+        fs = [ex.submit(eval_shard, pool, runs, out_dir, run, s, w)
+              for s in run.eval_steps for w in range(NSHARD)]
+        reporters.append(threading.Thread(target=report, args=(run, fs)))
+        reporters[-1].start()
     pool.add([int(g) for g in (a.final_eval_gpus or a.train_gpus).split(",")])
-    results = []
-    for run, fs in futs.items():
-        log(f"EVAL DONE {run.name} failed_shards={sum(f.result() for f in fs)}")
-        results.append(summary(out_dir, run))
-    (out_dir / "summary.json").write_text(json.dumps(results, indent=1))
+    for t in reporters:
+        t.join()
+    (out_dir / "summary.json").write_text(json.dumps(done, indent=1))
     log("ALL_DONE")
 
 
