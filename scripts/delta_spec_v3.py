@@ -1,8 +1,10 @@
 """v3 delta spec — every index MEASURED on the live env, never assumed.
 
-Source of truth: delta_v3/v3_layout.json, produced by probe_v3_layout.py, which
-builds each task's env from its own source_metadata.json and perturbs one joint
-at a time (asserting exactly one state dim moves).
+Source of truth: v3_layout.json. The paper's ten entries were measured on the
+pre-release env by perturbing one joint at a time. infer_layout.py re-derives
+every entry on the public release (each arm joint's state dim equals its
+full_qpos column in every demo frame) and reproduces those ten exactly; it also
+wrote the other ten tasks of the public dataset.
 
 THE LAYOUT IS PER TASK. An earlier version of this file exposed one global
 ACTION_DIM/STATE_DIM/permute_state derived from move_plate, on the strength of a
@@ -78,7 +80,7 @@ def spec(task: str) -> TaskSpec:
     if task not in _L:
         raise KeyError(
             f"{task!r} has no measured layout in {_LAYOUT_PATH.name}. Run "
-            f"probe_v3_layout.py for it first -- do NOT reuse another task's spec."
+            f"infer_layout.py --write {task} first -- do NOT reuse another task's spec."
         )
     e = _L[task]
     limbs = tuple(e["limb_names"])

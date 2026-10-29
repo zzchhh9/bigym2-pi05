@@ -1,0 +1,151 @@
+{
+ "task": "dishwasher_load_cutlery",
+ "mode": "replay",
+ "episodes": [
+  {
+   "episode": 0,
+   "steps": 1301,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.24462558329105377
+  },
+  {
+   "episode": 1,
+   "steps": 1161,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.3213563859462738
+  },
+  {
+   "episode": 2,
+   "steps": 1091,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.19107817113399506
+  },
+  {
+   "episode": 3,
+   "steps": 1058,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "terminated",
+   "fell": false,
+   "max_state_err": 0.48167306184768677
+  },
+  {
+   "episode": 4,
+   "steps": 1041,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "terminated",
+   "fell": false,
+   "max_state_err": 0.30000001192092896
+  },
+  {
+   "episode": 5,
+   "steps": 1145,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "terminated",
+   "fell": false,
+   "max_state_err": 0.19999998807907104
+  },
+  {
+   "episode": 6,
+   "steps": 959,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "terminated",
+   "fell": false,
+   "max_state_err": 0.2756478786468506
+  },
+  {
+   "episode": 7,
+   "steps": 1024,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "terminated",
+   "fell": false,
+   "max_state_err": 0.2999197244644165
+  },
+  {
+   "episode": 8,
+   "steps": 1035,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.41711798310279846
+  },
+  {
+   "episode": 9,
+   "steps": 1024,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "terminated",
+   "fell": false,
+   "max_state_err": 0.8006070852279663
+  }
+ ],
+ "prompt": "Move the cutlery from the holder on the table into the dishwasher's cutlery basket.",
+ "prompt_source": "lerobot_tasks_parquet",
+ "success_rate": 0.4,
+ "episode_length": 26500,
+ "episode_length_source": "task_protocol",
+ "episode_length_protocol": 26500,
+ "episode_length_collected": 60000,
+ "budget_provenance": "data_derived",
+ "deterministic_reset": true,
+ "protocol_violations": [],
+ "substrate_fingerprint": {
+  "substrate_version": "bigym2-mj381-v1",
+  "mujoco_version": "3.8.1",
+  "task": "dishwasher_load_cutlery",
+  "initialization_profile": "upstream",
+  "robot_model": "g1_dex1",
+  "lowerbody_backend": "groot_wbc_g1",
+  "success_hold_seconds": 1.0,
+  "lowerbody_base_action_mode": "lowerbody_cmd",
+  "lowerbody_init_stance": "keyframe",
+  "lowerbody_pitch_cmd": true,
+  "g1_passive_base_tilt": true,
+  "control_step_seconds": 0.02,
+  "lowerbody_checkpoint": null,
+  "lowerbody_weights": {
+   "GR00T-WholeBodyControl-Balance.onnx": "f645da599d4ca3d29ed273c8f4712620bb680d34977469ca3aeabe5bb9631c18",
+   "GR00T-WholeBodyControl-Walk.onnx": "7c82255b6905ffcc4468fa7f8ddcf7b70db168cf1042107ccab887cb6a8e5407"
+  },
+  "reset_warmup_steps": 200,
+  "reach_tolerance": null,
+  "compiled_model_sha256": "ba4351398897c2410ad6aff7f103f95a48ac022ae2f29f58c2fb1b65983a7b9f",
+  "bigym_version": "1.0.0",
+  "bigym_git_sha": "d71501359b21",
+  "episode_length": 26500,
+  "demo_down_sample_rate": 10,
+  "action_representation": "absolute",
+  "upper_delta_scale_rad": null,
+  "action_dim": 21,
+  "low_dim_component_slices": {
+   "proprioception": [
+    0,
+    50
+   ],
+   "proprioception_grippers": [
+    50,
+    52
+   ],
+   "proprioception_floating_base": [
+    52,
+    56
+   ]
+  },
+  "solver": 2,
+  "contact_signature": "aea10e54e00f29e1"
+ }
+}

@@ -1,0 +1,151 @@
+{
+ "task": "flip_cutlery",
+ "mode": "replay",
+ "episodes": [
+  {
+   "episode": 0,
+   "steps": 963,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.24370543658733368
+  },
+  {
+   "episode": 1,
+   "steps": 954,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "terminated",
+   "fell": false,
+   "max_state_err": 0.1982712745666504
+  },
+  {
+   "episode": 2,
+   "steps": 820,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.23888368904590607
+  },
+  {
+   "episode": 3,
+   "steps": 832,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.33956092596054077
+  },
+  {
+   "episode": 4,
+   "steps": 798,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "terminated",
+   "fell": false,
+   "max_state_err": 0.39034050703048706
+  },
+  {
+   "episode": 5,
+   "steps": 822,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.2577853798866272
+  },
+  {
+   "episode": 6,
+   "steps": 795,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.35084211826324463
+  },
+  {
+   "episode": 7,
+   "steps": 768,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.18844851851463318
+  },
+  {
+   "episode": 8,
+   "steps": 736,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.3369084298610687
+  },
+  {
+   "episode": 9,
+   "steps": 856,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.5590454936027527
+  }
+ ],
+ "prompt": "Take the cutlery from the holder, flip it, and place it back.",
+ "prompt_source": "lerobot_tasks_parquet",
+ "success_rate": 0.8,
+ "episode_length": 19500,
+ "episode_length_source": "task_protocol",
+ "episode_length_protocol": 19500,
+ "episode_length_collected": 60000,
+ "budget_provenance": "data_derived",
+ "deterministic_reset": true,
+ "protocol_violations": [],
+ "substrate_fingerprint": {
+  "substrate_version": "bigym2-mj381-v1",
+  "mujoco_version": "3.8.1",
+  "task": "flip_cutlery",
+  "initialization_profile": "upstream",
+  "robot_model": "g1_dex1",
+  "lowerbody_backend": "groot_wbc_g1",
+  "success_hold_seconds": 1.0,
+  "lowerbody_base_action_mode": "lowerbody_cmd",
+  "lowerbody_init_stance": "keyframe",
+  "lowerbody_pitch_cmd": true,
+  "g1_passive_base_tilt": true,
+  "control_step_seconds": 0.02,
+  "lowerbody_checkpoint": null,
+  "lowerbody_weights": {
+   "GR00T-WholeBodyControl-Balance.onnx": "f645da599d4ca3d29ed273c8f4712620bb680d34977469ca3aeabe5bb9631c18",
+   "GR00T-WholeBodyControl-Walk.onnx": "7c82255b6905ffcc4468fa7f8ddcf7b70db168cf1042107ccab887cb6a8e5407"
+  },
+  "reset_warmup_steps": 200,
+  "reach_tolerance": null,
+  "compiled_model_sha256": "54bb13d94fd9c816c4376a7398ef9601882f014110b852a1bd654d5eda3c5d53",
+  "bigym_version": "1.0.0",
+  "bigym_git_sha": "d71501359b21",
+  "episode_length": 19500,
+  "demo_down_sample_rate": 10,
+  "action_representation": "absolute",
+  "upper_delta_scale_rad": null,
+  "action_dim": 21,
+  "low_dim_component_slices": {
+   "proprioception": [
+    0,
+    50
+   ],
+   "proprioception_grippers": [
+    50,
+    52
+   ],
+   "proprioception_floating_base": [
+    52,
+    56
+   ]
+  },
+  "solver": 2,
+  "contact_signature": "6f241cf84d170a44"
+ }
+}

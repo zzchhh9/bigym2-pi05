@@ -6,8 +6,11 @@ They are ported to run on the public release
 ([swirl-uk/BiGym2](https://github.com/swirl-uk/BiGym2)) and the public demonstrations
 ([SWIRL-Lab/bigym-g1-native60](https://huggingface.co/datasets/SWIRL-Lab/bigym-g1-native60)).
 
-`as_run/` holds the files that actually ran, byte for byte. They have the paths of our
-cluster and import a pre-release BiGym module. Read them; run `scripts/`.
+`scripts/` uses only the public release: the env is the task's official configuration
+(`bigym.loco.make(task)`, no overrides, `protocol_violations` empty), and seeds and
+success follow `bigym.loco.eval` (`eval_seeds`, `is_success`). `as_run/` holds the files
+that actually ran for the paper, byte for byte. They have the paths of our cluster and
+import a pre-release BiGym module. Read them; run `scripts/`.
 
 ## Settings the paper does not state
 
@@ -21,8 +24,8 @@ one on the success rate.
    the arm joints are not at the same indices as in the action (the action starts with 4 or 5
    base commands). `export_v3.py` permutes `observation.state` so that the 14 arm joints sit
    at the action's arm indices, and writes the action names. Base commands and grippers stay
-   absolute (`relative_exclude_joints=["base_","gripper"]`). The layout of each task is in
-   `scripts/v3_layout.json`.
+   absolute (`relative_exclude_joints=["base_","gripper"]`). The layout of every task in
+   the public dataset (20 tasks) is in `scripts/v3_layout.json`.
 2. **Normalisation stats are recomputed on the relative actions.** LeRobot's π0.5 pipeline
    is raw → relative → normalise (QUANTILES, no clip), and the normaliser reads
    `meta/stats.json`, which holds the quantiles of the *absolute* actions. Arm deltas
@@ -40,7 +43,12 @@ one on the success rate.
    10 flow-matching steps (default), deterministic reset, seeds `620000 + i` for
    `i = 0..49`. Each of the last five checkpoints (26k, 27k, 28k, 29k, 30k steps) is
    evaluated on the same 50 seeds and the 250 episodes are pooled. The 250 episodes are
-   therefore not independent.
+   therefore not independent. An episode counts as a success by `bigym.loco.eval.is_success`
+   (the task latched success and the robot never fell). The policy's physical action is
+   clipped to the demonstrations' action envelope (`action_stats` in
+   `source_metadata.json`) before the env's own `normalize_action`; the envelope is
+   narrower than the env's bounds only on the base velocity commands (x 0.35, y 0.25,
+   yaw 0.5 instead of 1.0). This is the action path of the paper's runs.
 5. **Hardware and batch.** 6 × NVIDIA H20 (97 GB), DDP, batch 8 per GPU (global 48),
    no gradient accumulation, bf16, no gradient checkpointing, seed 1000, image augmentation
    off, ImageNet stats for SigLIP. Full train configs: `configs/`.
@@ -147,7 +155,10 @@ We ran `scripts/` from a clean environment (public BiGym2 `d715013`, LeRobot `b1
 the public dataset at revision `4c3e441`) on H20 GPUs, on 2026-10-28 and 2026-10-29. For each
 of the nine tasks: export and delta stats against the stats saved in our checkpoint, 10
 replayed demos, and our 30k-step checkpoint on seeds 620000-620049. The raw outputs are in
-`results/public_release/`.
+`results/public_release/`. These files come from `eval_v3.py` at commit `3a2906f`, which
+counted success as reward 1.0 and clipped through the demo envelope by setting the env's
+action stats. The current version uses `is_success` and leaves the env's stats alone; the
+actions it sends are the same, and none of the 450 episodes had a success with a fall.
 
 | Task | Stats vs our checkpoint | Replay | 30k ckpt, public env | 30k ckpt, paper run |
 |---|---|---|---|---|
@@ -170,6 +181,53 @@ replayed demos, and our 30k-step checkpoint on seeds 620000-620049. The raw outp
   that task, in the per-checkpoint table under "Our numbers". With 50 episodes, one standard error is about 3 episodes.
 - `launch_v3.sh` trains 20 steps on 2 GPUs; the saved preprocessor has the action names
   and `max_length: 200`.
+
+## The other eleven tasks of the dataset
+
+The public dataset has 20 tasks; the paper reports π0.5 on nine. The other eleven run with
+the same recipe and the same scripts, unchanged:
+
+| Task | Layout | Frames (60 demos) | Episode budget | Replay on public env |
+|---|---|---|---|---|
+| reach_target_single | 20/50 | 12085 | 9000 | 10/10 |
+| wall_cupboard_open | 21/56 | 35650 | 14500 | 10/10 |
+| wall_cupboard_close | 21/56 | 35402 | 17000 | 7/10 |
+| flip_cup | 21/56 | 36443 | 18500 | 7/10 |
+| flip_cutlery | 21/56 | 44158 | 19500 | 8/10 |
+| dishwasher_load_cutlery | 21/56 | 57541 | 26500 | 4/10 |
+| put_cups | 21/56 | 61124 | 30000 | 9/10 |
+| dishwasher_load_plates | 21/56 | 74885 | 31500 | 9/10 |
+| sandwich_remove | 21/56 | 65863 | 31500 | 7/10 |
+| saucepan_to_hob | 21/56 | 91205 | 46500 | 4/10 |
+| stack_blocks | 21/56 | 231636 | 87500 | 1/10 |
+
+- Layout: the ten new entries of `v3_layout.json` come from `infer_layout.py`. All ten
+  pitch tasks have the same layout as `dishwasher_close`. `infer_layout.py --check`
+  re-derives all 20 entries on the public env and matches each one.
+- Every budget is `data_derived` and equals the demos' `recommended_episode_length`, so
+  `export_v3.py` accepts every task. Raw outputs: `results/release_check/`.
+- The same recipe means 30k steps for every task, as in the paper. A task with more frames
+  sees fewer epochs: about 6 for `stack_blocks`, against about 38 for `move_plate`.
+- Replay success is low for the long tasks (`stack_blocks` 1/10, `saucepan_to_hob` and
+  `dishwasher_load_cutlery` 4/10): those demos drift off on the public env's contact model
+  (see [Substrate](#substrate)). A policy trained on them is still evaluated on the public
+  env, as every result on the release is.
+
+To run them on one 8-GPU machine:
+
+```bash
+python scripts/run_tasks.py reach_target_single wall_cupboard_open wall_cupboard_close \
+  flip_cup flip_cutlery dishwasher_load_cutlery put_cups dishwasher_load_plates \
+  sandwich_remove saucepan_to_hob stack_blocks \
+  --train-gpus 0,1,2,3,4,5 --eval-gpus 6,7
+```
+
+Cost on 8 × H20: training runs at 1.4 s/step (measured), about 11.7 h per task and 129 h
+for the eleven. Evaluation (250 episodes per task) runs at about 9 env steps/s per worker;
+when every episode times out it takes from 7 worker-hours (`reach_target_single`) to
+68 worker-hours (`stack_blocks`), 256 worker-hours for the eleven. With 4 eval workers it
+fits inside the training time. We have run each step of `run_tasks.py` separately (export,
+`launch_v3.sh`, `eval_v3.py`); we have not run the script end to end.
 
 ## Substrate
 
@@ -197,11 +255,14 @@ above).
 | `scripts/export_v3.py` | Native dataset → absolute LeRobot dataset |
 | `scripts/make_delta_v3.py` | Absolute → delta dataset (hard-linked frames, new stats) |
 | `scripts/launch_v3.sh` | `torchrun lerobot_train` with the paper's arguments |
-| `scripts/eval_v3.py` | Closed-loop evaluation and the replay gate |
+| `scripts/eval_v3.py` | Closed-loop evaluation and the replay check |
+| `scripts/infer_layout.py` | Derives a task's layout from its demonstrations and the official env; `--check` re-derives every entry of `v3_layout.json` |
+| `scripts/run_tasks.py` | Train and evaluate a list of tasks with the paper's recipe on one 8-GPU machine (resumable) |
 | `configs/*_train_config.json` | Saved `train_config.json` of the nine paper runs at 30k steps (paths are our cluster's) |
 | `as_run/` | The files that ran, unchanged, incl. the nine-task orchestrator |
 | `results/public_release/` | Raw output of the public-release check: `<task>_prep.json` (stats comparison), `<task>_replay.json`, `<task>_030000_w<k>.json` (one shard of the 50 seeds each) |
 | `requirements_public_validated.txt` | Package versions of the public-release check |
+| `results/release_check/` | Release-only check of the current `eval_v3.py`: replay of the eleven other tasks, one 5-episode shard of each paper task with `protocol_violations` recorded |
 
 ## Licence
 

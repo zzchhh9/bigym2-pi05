@@ -1,0 +1,151 @@
+{
+ "task": "flip_cup",
+ "mode": "replay",
+ "episodes": [
+  {
+   "episode": 0,
+   "steps": 673,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.07675829529762268
+  },
+  {
+   "episode": 1,
+   "steps": 530,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "terminated",
+   "fell": false,
+   "max_state_err": 1.0267410278320312
+  },
+  {
+   "episode": 2,
+   "steps": 600,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.6048059463500977
+  },
+  {
+   "episode": 3,
+   "steps": 599,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "terminated",
+   "fell": false,
+   "max_state_err": 0.598920464515686
+  },
+  {
+   "episode": 4,
+   "steps": 564,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "terminated",
+   "fell": false,
+   "max_state_err": 0.17421182990074158
+  },
+  {
+   "episode": 5,
+   "steps": 601,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.32327133417129517
+  },
+  {
+   "episode": 6,
+   "steps": 686,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.22191517055034637
+  },
+  {
+   "episode": 7,
+   "steps": 576,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.252701997756958
+  },
+  {
+   "episode": 8,
+   "steps": 518,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.29178544878959656
+  },
+  {
+   "episode": 9,
+   "steps": 619,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.5192890167236328
+  }
+ ],
+ "prompt": "Flip the upside-down cup to an upright position.",
+ "prompt_source": "lerobot_tasks_parquet",
+ "success_rate": 0.7,
+ "episode_length": 18500,
+ "episode_length_source": "task_protocol",
+ "episode_length_protocol": 18500,
+ "episode_length_collected": 60000,
+ "budget_provenance": "data_derived",
+ "deterministic_reset": true,
+ "protocol_violations": [],
+ "substrate_fingerprint": {
+  "substrate_version": "bigym2-mj381-v1",
+  "mujoco_version": "3.8.1",
+  "task": "flip_cup",
+  "initialization_profile": "upstream",
+  "robot_model": "g1_dex1",
+  "lowerbody_backend": "groot_wbc_g1",
+  "success_hold_seconds": 1.0,
+  "lowerbody_base_action_mode": "lowerbody_cmd",
+  "lowerbody_init_stance": "keyframe",
+  "lowerbody_pitch_cmd": true,
+  "g1_passive_base_tilt": true,
+  "control_step_seconds": 0.02,
+  "lowerbody_checkpoint": null,
+  "lowerbody_weights": {
+   "GR00T-WholeBodyControl-Balance.onnx": "f645da599d4ca3d29ed273c8f4712620bb680d34977469ca3aeabe5bb9631c18",
+   "GR00T-WholeBodyControl-Walk.onnx": "7c82255b6905ffcc4468fa7f8ddcf7b70db168cf1042107ccab887cb6a8e5407"
+  },
+  "reset_warmup_steps": 200,
+  "reach_tolerance": null,
+  "compiled_model_sha256": "d714a8db36e5b9bf60564283881caa3454c577deac335ed343d4bbcc093ab122",
+  "bigym_version": "1.0.0",
+  "bigym_git_sha": "d71501359b21",
+  "episode_length": 18500,
+  "demo_down_sample_rate": 10,
+  "action_representation": "absolute",
+  "upper_delta_scale_rad": null,
+  "action_dim": 21,
+  "low_dim_component_slices": {
+   "proprioception": [
+    0,
+    50
+   ],
+   "proprioception_grippers": [
+    50,
+    52
+   ],
+   "proprioception_floating_base": [
+    52,
+    56
+   ]
+  },
+  "solver": 2,
+  "contact_signature": "235381194d4ecfe0"
+ }
+}

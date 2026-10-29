@@ -1,0 +1,151 @@
+{
+ "task": "put_cups",
+ "mode": "replay",
+ "episodes": [
+  {
+   "episode": 0,
+   "steps": 1477,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.173954576253891
+  },
+  {
+   "episode": 1,
+   "steps": 1363,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.23838073015213013
+  },
+  {
+   "episode": 2,
+   "steps": 1291,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.14985232055187225
+  },
+  {
+   "episode": 3,
+   "steps": 1406,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.16354480385780334
+  },
+  {
+   "episode": 4,
+   "steps": 1115,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.3104764223098755
+  },
+  {
+   "episode": 5,
+   "steps": 1187,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.36664316058158875
+  },
+  {
+   "episode": 6,
+   "steps": 1058,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.35374462604522705
+  },
+  {
+   "episode": 7,
+   "steps": 1094,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.19168874621391296
+  },
+  {
+   "episode": 8,
+   "steps": 1031,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.14588984847068787
+  },
+  {
+   "episode": 9,
+   "steps": 1073,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "terminated",
+   "fell": false,
+   "max_state_err": 0.3267807364463806
+  }
+ ],
+ "prompt": "Pick up the cups from the table and put them into the closed wall cabinet.",
+ "prompt_source": "lerobot_tasks_parquet",
+ "success_rate": 0.9,
+ "episode_length": 30000,
+ "episode_length_source": "task_protocol",
+ "episode_length_protocol": 30000,
+ "episode_length_collected": 60000,
+ "budget_provenance": "data_derived",
+ "deterministic_reset": true,
+ "protocol_violations": [],
+ "substrate_fingerprint": {
+  "substrate_version": "bigym2-mj381-v1",
+  "mujoco_version": "3.8.1",
+  "task": "put_cups",
+  "initialization_profile": "upstream",
+  "robot_model": "g1_dex1",
+  "lowerbody_backend": "groot_wbc_g1",
+  "success_hold_seconds": 1.0,
+  "lowerbody_base_action_mode": "lowerbody_cmd",
+  "lowerbody_init_stance": "keyframe",
+  "lowerbody_pitch_cmd": true,
+  "g1_passive_base_tilt": true,
+  "control_step_seconds": 0.02,
+  "lowerbody_checkpoint": null,
+  "lowerbody_weights": {
+   "GR00T-WholeBodyControl-Balance.onnx": "f645da599d4ca3d29ed273c8f4712620bb680d34977469ca3aeabe5bb9631c18",
+   "GR00T-WholeBodyControl-Walk.onnx": "7c82255b6905ffcc4468fa7f8ddcf7b70db168cf1042107ccab887cb6a8e5407"
+  },
+  "reset_warmup_steps": 200,
+  "reach_tolerance": null,
+  "compiled_model_sha256": "7b65dc407a6312fe33496ccb22fb0d9a988a4cf9919bfc3df7022e820d50b672",
+  "bigym_version": "1.0.0",
+  "bigym_git_sha": "d71501359b21",
+  "episode_length": 30000,
+  "demo_down_sample_rate": 10,
+  "action_representation": "absolute",
+  "upper_delta_scale_rad": null,
+  "action_dim": 21,
+  "low_dim_component_slices": {
+   "proprioception": [
+    0,
+    50
+   ],
+   "proprioception_grippers": [
+    50,
+    52
+   ],
+   "proprioception_floating_base": [
+    52,
+    56
+   ]
+  },
+  "solver": 2,
+  "contact_signature": "7f32a81a4bda9a5d"
+ }
+}

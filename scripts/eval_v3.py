@@ -1,9 +1,13 @@
 """v3 evaluation for pi0.5 checkpoints (absolute OR OpenPI-delta).
 
-Port to the public BiGym 2.0 release (github.com/swirl-uk/BiGym2). The env is
-the task's official configuration, ``bigym.loco.make(task)``; build_env checks
-it against the demos' source_metadata.json and stops on any difference. The
-paper's runs used the pre-release substrate; see the README.
+Runs on the public BiGym 2.0 release (github.com/swirl-uk/BiGym2) and its
+evaluation protocol: the env is the task's official configuration,
+``bigym.loco.make(task)`` with no overrides (``protocol_violations`` must be
+empty), seeds come from ``bigym.loco.eval.eval_seeds`` (620000 + i), and an
+episode counts with ``bigym.loco.eval.is_success`` (success latched, robot never
+fell). build_env also checks the official config against the demos'
+source_metadata.json and stops on any difference. The paper's runs used the
+pre-release substrate; see the README.
 
 Four things must line up or the score is a silent zero (all four cost us a full
 sweep once already):
@@ -18,8 +22,11 @@ sweep once already):
     delta variant AbsoluteActionsProcessorStep adds this same permuted state
     back, so the permutation must match bit-for-bit.
  4. The policy emits PHYSICAL actions (delta already integrated by the
-    postprocessor). The env wants the collector-envelope [-1,1] space, so the
-    physical vector is converted with the demo metadata's action_stats.
+    postprocessor). They are clipped to the demonstrations' action envelope
+    (source_metadata.json action_stats; it is narrower than the env's bounds
+    only on the base velocity commands) and converted to [-1, 1] with the env's
+    own ``normalize_action``. This is the paper's action path; the env itself
+    keeps its official action stats.
 
 The *episode budget* is NOT taken from source_metadata.json (that is the
 collection cap, e.g. 60000). Formal eval uses
@@ -29,7 +36,9 @@ override. Reset is ``deterministic_reset=True``: a fixed 620000+i seed is
 not the same as aligned controller state.
 
 --replay ignores the policy and pushes the demo's own recorded actions through
-this exact env: reward must be 1.0, otherwise no policy number means anything.
+this exact env. On the public release 7-10 of 10 demos per task succeed (the
+contact model differs from the one the demos were recorded with); a wrong state
+layout shows as max|state-dataset| of order 1 from the first steps.
 
 The language instruction is the SFT dataset string (tasks.parquet): the
 policy must see the sentence it was trained on.
@@ -136,17 +145,19 @@ def _jsonable(obj):
     return json.loads(json.dumps(obj, default=str))
 
 
-def _outcome(env, success):
-    return env.episode_termination(), bool(env.episode_fell())
+def _outcome(env):
+    """(success by the public protocol, termination, fell)."""
+    from bigym.loco.eval import is_success
+    return bool(is_success(env)), env.episode_termination(), bool(env.episode_fell())
 
 
-def build_env(task, episode_length=None):
+def build_env(task):
     SPEC = spec(task)
     from bigym.loco import make
+    from bigym.loco.eval import protocol_violations
     from bigym.loco.tasks import task_config
     budget, provenance = protocol_budget(task)
-    if episode_length is None:
-        episode_length = budget
+    episode_length = budget
     m = json.loads((NATIVE / task / "meta" / "source_metadata.json").read_text())
     t = m["task"]
     collected = int(t.get("episode_length") or 0)
@@ -175,13 +186,16 @@ def build_env(task, episode_length=None):
     have = {k: tuple(v) if isinstance(v, list) else v for k, v in have.items()}
     diff = {k: (have[k], want[k]) for k in want if have[k] != want[k]}
     assert not diff, f"official config differs from the demos: {diff}"
-    env = make(task, episode_length=int(episode_length))      # (2) RAW state by default
+    env = make(task)                                           # official; (2) RAW state
+    violations = protocol_violations(env)
+    assert not violations, f"env is not the official configuration: {violations}"
     assert env.config.controller.deterministic_reset
+    assert int(env.config.episode_length) == budget, (env.config.episode_length, budget)
     fp = m["substrate_fingerprint"]
-    live = int(np.asarray(env._outer_action_low).shape[0])
+    live = len(env.action_stats["min"])
     assert live == int(fp["action_dim"]) == SPEC.action_dim, (live, fp["action_dim"])
     st = m["action_stats"]
-    env.set_action_stats(np.asarray(st["min"], np.float32),
+    env.demo_envelope = (np.asarray(st["min"], np.float32),
                          np.asarray(st["max"], np.float32))     # (4)
     return env, m, {
         "episode_length": int(episode_length),
@@ -190,7 +204,14 @@ def build_env(task, episode_length=None):
         "episode_length_collected": collected or None,
         "budget_provenance": provenance,
         "deterministic_reset": True,
+        "protocol_violations": violations,
     }
+
+
+def to_env_action(env, phys):
+    """(4) physical action -> [-1, 1]: demo envelope clip, then the env's own stats."""
+    lo, hi = env.demo_envelope
+    return np.clip(env.normalize_action(np.clip(phys, lo, hi)), -1, 1)
 
 
 def guard_state_space(env, ckpt, seed, SPEC):
@@ -300,7 +321,7 @@ def main():
             restore_engage_state(env, {k: arr(sn, k, dtype(k)) for k in sn})
             mx, k, worst = 0.0, 0, 0.0
             for k in range(1, len(A)):
-                ts = env.step(np.clip(env.normalize_action(A[k]), -1, 1))
+                ts = env.step(to_env_action(env, A[k]))
                 # observation.state of row k is the observation the action of
                 # row k was taken from, so the state after that action is row
                 # k+1. Matching it checks the v3 layout on this BiGym. The
@@ -311,8 +332,7 @@ def main():
                     worst = max(worst, float(np.abs(s_env - S[k + 1]).max()))
                 mx = max(mx, float(ts.reward or 0.0))
                 if ts.last(): break
-            success = bool(mx >= 1 - 1e-6)
-            termination, fell = _outcome(env, success)
+            success, termination, fell = _outcome(env)
             eps.append({"episode": ep, "steps": k, "max_reward": mx,
                         "success": success, "termination": termination, "fell": fell,
                         "max_state_err": worst})
@@ -331,7 +351,8 @@ def main():
     import torch
     from lerobot.policies import make_pre_post_processors
     from lerobot.policies.pi05.modeling_pi05 import PI05Policy
-    seeds = [a.seed_base + i for i in range(a.episodes)][a.worker_id::a.num_workers]
+    from bigym.loco.eval import eval_seeds
+    seeds = eval_seeds(a.episodes, seed_base=a.seed_base)[a.worker_id::a.num_workers]
     print(f"{tag} {len(seeds)} episodes: {seeds[:3]}...", flush=True)
     ts, inside = guard_state_space(env, a.ckpt, seeds[0], SPEC)
     print(f"{tag} state-space verified: {inside}/{SPEC.state_dim} dims inside envelope", flush=True)
@@ -366,12 +387,10 @@ def main():
             phys = np.asarray(phys.squeeze(0).float().cpu().numpy(), np.float32)
             if rel:
                 phys[mask] += anchor[:phys.shape[0]][mask] - s_now[:phys.shape[0]][mask]
-            norm = env.normalize_action(phys)                           # (4) physical -> [-1,1]
-            ts = env.step(np.clip(norm, -1, 1))
+            ts = env.step(to_env_action(env, phys))                     # (4)
             mx = max(mx, float(ts.reward or 0.0))
             if ts.last(): break
-        success = bool(mx >= 1 - 1e-6)
-        termination, fell = _outcome(env, success)
+        success, termination, fell = _outcome(env)
         eps.append({"seed": int(seed), "steps": k, "max_reward": mx,
                     "success": success, "termination": termination, "fell": fell,
                     "wall_s": round(time.time() - t0, 1)})

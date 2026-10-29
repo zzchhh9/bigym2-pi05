@@ -1,0 +1,151 @@
+{
+ "task": "dishwasher_load_plates",
+ "mode": "replay",
+ "episodes": [
+  {
+   "episode": 0,
+   "steps": 1436,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.25177526473999023
+  },
+  {
+   "episode": 1,
+   "steps": 1415,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.1353004276752472
+  },
+  {
+   "episode": 2,
+   "steps": 1563,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.14399133622646332
+  },
+  {
+   "episode": 3,
+   "steps": 1348,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.28577721118927
+  },
+  {
+   "episode": 4,
+   "steps": 1324,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "terminated",
+   "fell": false,
+   "max_state_err": 0.5111727118492126
+  },
+  {
+   "episode": 5,
+   "steps": 1252,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.4075850546360016
+  },
+  {
+   "episode": 6,
+   "steps": 1205,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.12547510862350464
+  },
+  {
+   "episode": 7,
+   "steps": 1335,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.17385312914848328
+  },
+  {
+   "episode": 8,
+   "steps": 1189,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.09501543641090393
+  },
+  {
+   "episode": 9,
+   "steps": 1349,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.4276157021522522
+  }
+ ],
+ "prompt": "Move the plates from the rack into the dishwasher's lower tray.",
+ "prompt_source": "lerobot_tasks_parquet",
+ "success_rate": 0.9,
+ "episode_length": 31500,
+ "episode_length_source": "task_protocol",
+ "episode_length_protocol": 31500,
+ "episode_length_collected": 60000,
+ "budget_provenance": "data_derived",
+ "deterministic_reset": true,
+ "protocol_violations": [],
+ "substrate_fingerprint": {
+  "substrate_version": "bigym2-mj381-v1",
+  "mujoco_version": "3.8.1",
+  "task": "dishwasher_load_plates",
+  "initialization_profile": "upstream",
+  "robot_model": "g1_dex1",
+  "lowerbody_backend": "groot_wbc_g1",
+  "success_hold_seconds": 1.0,
+  "lowerbody_base_action_mode": "lowerbody_cmd",
+  "lowerbody_init_stance": "keyframe",
+  "lowerbody_pitch_cmd": true,
+  "g1_passive_base_tilt": true,
+  "control_step_seconds": 0.02,
+  "lowerbody_checkpoint": null,
+  "lowerbody_weights": {
+   "GR00T-WholeBodyControl-Balance.onnx": "f645da599d4ca3d29ed273c8f4712620bb680d34977469ca3aeabe5bb9631c18",
+   "GR00T-WholeBodyControl-Walk.onnx": "7c82255b6905ffcc4468fa7f8ddcf7b70db168cf1042107ccab887cb6a8e5407"
+  },
+  "reset_warmup_steps": 200,
+  "reach_tolerance": null,
+  "compiled_model_sha256": "6c72e891e5f7987d162816d4798d775dc998fe3e7d27bf6c057de0e45cd95433",
+  "bigym_version": "1.0.0",
+  "bigym_git_sha": "d71501359b21",
+  "episode_length": 31500,
+  "demo_down_sample_rate": 10,
+  "action_representation": "absolute",
+  "upper_delta_scale_rad": null,
+  "action_dim": 21,
+  "low_dim_component_slices": {
+   "proprioception": [
+    0,
+    50
+   ],
+   "proprioception_grippers": [
+    50,
+    52
+   ],
+   "proprioception_floating_base": [
+    52,
+    56
+   ]
+  },
+  "solver": 2,
+  "contact_signature": "e8540a81798cf43d"
+ }
+}

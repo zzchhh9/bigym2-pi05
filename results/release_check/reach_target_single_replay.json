@@ -1,0 +1,151 @@
+{
+ "task": "reach_target_single",
+ "mode": "replay",
+ "episodes": [
+  {
+   "episode": 0,
+   "steps": 259,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.00027533480897545815
+  },
+  {
+   "episode": 1,
+   "steps": 224,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.00027945637702941895
+  },
+  {
+   "episode": 2,
+   "steps": 324,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 1.5564262866973877e-05
+  },
+  {
+   "episode": 3,
+   "steps": 191,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.0003377757966518402
+  },
+  {
+   "episode": 4,
+   "steps": 208,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.00018197298049926758
+  },
+  {
+   "episode": 5,
+   "steps": 202,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.0016659609973430634
+  },
+  {
+   "episode": 6,
+   "steps": 189,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.0012768357992172241
+  },
+  {
+   "episode": 7,
+   "steps": 196,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.0005787890404462814
+  },
+  {
+   "episode": 8,
+   "steps": 206,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.000905890017747879
+  },
+  {
+   "episode": 9,
+   "steps": 181,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 2.6644207537174225e-05
+  }
+ ],
+ "prompt": "Reach the target with the left wrist.",
+ "prompt_source": "lerobot_tasks_parquet",
+ "success_rate": 1.0,
+ "episode_length": 9000,
+ "episode_length_source": "task_protocol",
+ "episode_length_protocol": 9000,
+ "episode_length_collected": 60000,
+ "budget_provenance": "data_derived",
+ "deterministic_reset": true,
+ "protocol_violations": [],
+ "substrate_fingerprint": {
+  "substrate_version": "bigym2-mj381-v1",
+  "mujoco_version": "3.8.1",
+  "task": "reach_target_single",
+  "initialization_profile": "upstream",
+  "robot_model": "g1_dex1",
+  "lowerbody_backend": "groot_wbc_g1",
+  "success_hold_seconds": 1.0,
+  "lowerbody_base_action_mode": "lowerbody_cmd",
+  "lowerbody_init_stance": "keyframe",
+  "lowerbody_pitch_cmd": false,
+  "g1_passive_base_tilt": true,
+  "control_step_seconds": 0.02,
+  "lowerbody_checkpoint": null,
+  "lowerbody_weights": {
+   "GR00T-WholeBodyControl-Balance.onnx": "f645da599d4ca3d29ed273c8f4712620bb680d34977469ca3aeabe5bb9631c18",
+   "GR00T-WholeBodyControl-Walk.onnx": "7c82255b6905ffcc4468fa7f8ddcf7b70db168cf1042107ccab887cb6a8e5407"
+  },
+  "reset_warmup_steps": 200,
+  "reach_tolerance": 0.05,
+  "compiled_model_sha256": "3fb70f9553f4931f1fca04294ff0167b69b1460462b55863159115bfeb78d204",
+  "bigym_version": "1.0.0",
+  "bigym_git_sha": "d71501359b21",
+  "episode_length": 9000,
+  "demo_down_sample_rate": 10,
+  "action_representation": "absolute",
+  "upper_delta_scale_rad": null,
+  "action_dim": 20,
+  "low_dim_component_slices": {
+   "proprioception": [
+    0,
+    44
+   ],
+   "proprioception_grippers": [
+    44,
+    46
+   ],
+   "proprioception_floating_base": [
+    46,
+    50
+   ]
+  },
+  "solver": 2,
+  "contact_signature": "f9fe9800e1dd15ed"
+ }
+}

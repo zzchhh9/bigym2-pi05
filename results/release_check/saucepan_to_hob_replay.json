@@ -1,0 +1,151 @@
+{
+ "task": "saucepan_to_hob",
+ "mode": "replay",
+ "episodes": [
+  {
+   "episode": 0,
+   "steps": 1588,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.6002295613288879
+  },
+  {
+   "episode": 1,
+   "steps": 1485,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.4721980690956116
+  },
+  {
+   "episode": 2,
+   "steps": 1540,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "terminated",
+   "fell": false,
+   "max_state_err": 1.4236581325531006
+  },
+  {
+   "episode": 3,
+   "steps": 1928,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "terminated",
+   "fell": false,
+   "max_state_err": 0.7513923645019531
+  },
+  {
+   "episode": 4,
+   "steps": 1404,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "terminated",
+   "fell": false,
+   "max_state_err": 0.699139416217804
+  },
+  {
+   "episode": 5,
+   "steps": 1771,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 0.2889695167541504
+  },
+  {
+   "episode": 6,
+   "steps": 1417,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "terminated",
+   "fell": false,
+   "max_state_err": 0.3050718307495117
+  },
+  {
+   "episode": 7,
+   "steps": 1346,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "terminated",
+   "fell": false,
+   "max_state_err": 1.4408410787582397
+  },
+  {
+   "episode": 8,
+   "steps": 1700,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "terminated",
+   "fell": false,
+   "max_state_err": 1.6387920379638672
+  },
+  {
+   "episode": 9,
+   "steps": 1924,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "max_state_err": 1.4510869979858398
+  }
+ ],
+ "prompt": "Take the saucepan from the closed cabinet and place it on the hob.",
+ "prompt_source": "lerobot_tasks_parquet",
+ "success_rate": 0.4,
+ "episode_length": 46500,
+ "episode_length_source": "task_protocol",
+ "episode_length_protocol": 46500,
+ "episode_length_collected": 60000,
+ "budget_provenance": "data_derived",
+ "deterministic_reset": true,
+ "protocol_violations": [],
+ "substrate_fingerprint": {
+  "substrate_version": "bigym2-mj381-v1",
+  "mujoco_version": "3.8.1",
+  "task": "saucepan_to_hob",
+  "initialization_profile": "upstream",
+  "robot_model": "g1_dex1",
+  "lowerbody_backend": "groot_wbc_g1",
+  "success_hold_seconds": 1.0,
+  "lowerbody_base_action_mode": "lowerbody_cmd",
+  "lowerbody_init_stance": "keyframe",
+  "lowerbody_pitch_cmd": true,
+  "g1_passive_base_tilt": true,
+  "control_step_seconds": 0.02,
+  "lowerbody_checkpoint": null,
+  "lowerbody_weights": {
+   "GR00T-WholeBodyControl-Balance.onnx": "f645da599d4ca3d29ed273c8f4712620bb680d34977469ca3aeabe5bb9631c18",
+   "GR00T-WholeBodyControl-Walk.onnx": "7c82255b6905ffcc4468fa7f8ddcf7b70db168cf1042107ccab887cb6a8e5407"
+  },
+  "reset_warmup_steps": 200,
+  "reach_tolerance": null,
+  "compiled_model_sha256": "a5d709c269731cdb4450eb3c2882ccf4c5d6fec0601387eb5ef1ea265fc24b19",
+  "bigym_version": "1.0.0",
+  "bigym_git_sha": "d71501359b21",
+  "episode_length": 46500,
+  "demo_down_sample_rate": 10,
+  "action_representation": "absolute",
+  "upper_delta_scale_rad": null,
+  "action_dim": 21,
+  "low_dim_component_slices": {
+   "proprioception": [
+    0,
+    50
+   ],
+   "proprioception_grippers": [
+    50,
+    52
+   ],
+   "proprioception_floating_base": [
+    52,
+    56
+   ]
+  },
+  "solver": 2,
+  "contact_signature": "3e8cca2c504f0090"
+ }
+}
