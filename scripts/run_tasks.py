@@ -21,7 +21,10 @@ of the runs already trained goes on.
 
 Training needs only CUDA. Evaluation renders with MuJoCo EGL; each eval worker
 gets CUDA_VISIBLE_DEVICES=<gpu> and MUJOCO_EGL_DEVICE_ID=<gpu>, and workers on
-one GPU start STAGGER seconds apart.
+one GPU start STAGGER seconds apart. An eval shard starts only on a GPU with at
+least --eval-min-free-mib free memory. On a GPU in --yield-gpus (one shared with
+another service, such as a vLLM server) it also waits until the GPU has been
+idle (utilization <= YIELD_UTIL % in every sample) before it starts.
 """
 import argparse, json, os, re, shutil, subprocess, sys, threading, time
 from concurrent.futures import ThreadPoolExecutor
@@ -32,6 +35,7 @@ HERE = Path(__file__).resolve().parent
 WORK = Path(os.environ.get("PI05_WORK_ROOT", HERE.parent / "work"))
 PY = os.environ.get("PI05_PYTHON", sys.executable)
 PAPER_STEPS, LAST, NSHARD, NEP, STAGGER = 30000, 5, 10, 50, 25
+YIELD_UTIL, SAMPLES, POLL = 10, 3, 30
 
 
 @dataclass(frozen=True)
@@ -58,24 +62,52 @@ def log(msg):
     print(time.strftime("%m-%d %H:%M:%S"), msg, flush=True)
 
 
+def gpu_state(g):
+    """(free MiB, utilization %) of GPU g, or None when nvidia-smi fails."""
+    r = subprocess.run(["nvidia-smi", "-i", str(g), "--query-gpu=memory.free,utilization.gpu",
+                        "--format=csv,noheader,nounits"], capture_output=True, text=True)
+    try:
+        free, util = (int(x) for x in r.stdout.strip().split(","))
+        return free, util
+    except ValueError:
+        return None
+
+
 class EvalPool:
     """GPU slots for eval workers; same-GPU starts are STAGGER seconds apart."""
 
-    def __init__(self, gpus, per_gpu):
+    def __init__(self, gpus, per_gpu, min_free_mib, yield_gpus):
         self.cv, self.free, self.last = threading.Condition(), [], {}
-        self.per_gpu = per_gpu
-        self.add(gpus)
+        self.min_free, self.yield_gpus = min_free_mib, set(yield_gpus)
+        self.add(gpus, per_gpu)
 
-    def add(self, gpus):
+    def add(self, gpus, per_gpu):
         with self.cv:
-            self.free.extend((g, i) for i in range(self.per_gpu) for g in gpus)
+            self.free.extend((g, i) for i in range(per_gpu) for g in gpus)
             self.cv.notify_all()
+
+    def ready(self, g):
+        for k in range(SAMPLES):
+            st = gpu_state(g)
+            if st is None or st[0] < self.min_free:
+                return False
+            if g in self.yield_gpus and st[1] > YIELD_UTIL:
+                return False
+            if k + 1 < SAMPLES:
+                time.sleep(5)
+        return True
 
     def take(self):
         with self.cv:
             while not self.free:
                 self.cv.wait()
             g, i = self.free.pop(0)
+        waited = 0
+        while not self.ready(g):
+            if waited % 1800 < POLL:
+                log(f"EVAL WAIT gpu{g}: busy or short of memory ({gpu_state(g)}), waited {waited // 60} min")
+            time.sleep(POLL); waited += POLL
+        with self.cv:
             t0 = max(time.time(), self.last.get(g, 0.0) + STAGGER)
             self.last[g] = t0
         time.sleep(max(0.0, t0 - time.time()))
@@ -205,12 +237,18 @@ def main():
     p.add_argument("--final-eval-gpus", default=None,
                    help="GPUs added to eval once all training is done (default: --train-gpus)")
     p.add_argument("--eval-per-gpu", type=int, default=2)
+    p.add_argument("--final-eval-per-gpu", type=int, default=None,
+                   help="eval workers per --final-eval-gpus GPU (default: --eval-per-gpu)")
+    p.add_argument("--eval-min-free-mib", type=int, default=12000)
+    p.add_argument("--yield-gpus", default="",
+                   help="GPUs shared with another service: eval starts there only when the GPU is idle")
     p.add_argument("--runs", default=str(WORK / "pi05_runs_v3"))
     p.add_argument("--eval-out", default=str(WORK / "eval"))
     a = p.parse_args()
     runs, out_dir = Path(a.runs), Path(a.eval_out)
     runs.mkdir(parents=True, exist_ok=True); out_dir.mkdir(parents=True, exist_ok=True)
-    pool = EvalPool([int(g) for g in a.eval_gpus.split(",")], a.eval_per_gpu)
+    pool = EvalPool([int(g) for g in a.eval_gpus.split(",")], a.eval_per_gpu, a.eval_min_free_mib,
+                    [int(g) for g in a.yield_gpus.split(",") if g])
     ex = ThreadPoolExecutor(64); reporters, done = [], []
 
     def report(run, fs):
@@ -228,7 +266,8 @@ def main():
               for s in run.eval_steps for w in range(NSHARD)]
         reporters.append(threading.Thread(target=report, args=(run, fs)))
         reporters[-1].start()
-    pool.add([int(g) for g in (a.final_eval_gpus or a.train_gpus).split(",")])
+    pool.add([int(g) for g in (a.final_eval_gpus or a.train_gpus).split(",")],
+             a.final_eval_per_gpu or a.eval_per_gpu)
     for t in reporters:
         t.join()
     (out_dir / "summary.json").write_text(json.dumps(done, indent=1))
