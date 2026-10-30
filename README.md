@@ -207,24 +207,41 @@ the same recipe and the same scripts, unchanged:
   re-derives all 20 entries on the public env and matches each one.
 - Every budget is `data_derived` and equals the demos' `recommended_episode_length`, so
   `export_v3.py` accepts every task. Raw outputs: `results/replay/`, `results/release_check/`.
-- The same recipe means 30k steps for every task, as in the paper. A task with more frames
-  sees fewer epochs: about 6 for `stack_blocks`, against about 38 for `move_plate`.
+- Training length: 30k steps for every task, as in the paper. At global batch 48 that is
+  13 epochs (`dishwasher_close`) to 137 epochs (`reach_target_multi_modal`) for the paper's
+  tasks, and 16 to 119 epochs for ten of the eleven others. `stack_blocks` gets only 6, below
+  anything the paper ran, so it is trained twice: 30k steps (the paper recipe) and 72k steps
+  (about 15 epochs, with the cosine schedule over the 72k steps; scored on 68k-72k).
+  `run_tasks.py` takes `task:steps` for this. We chose 15 epochs because the paper's
+  lowest-epoch tasks (13 and 14 epochs) still trained well; we have not measured the effect.
 
 To run them on one 8-GPU machine:
 
 ```bash
-python scripts/run_tasks.py reach_target_single wall_cupboard_open wall_cupboard_close \
+python scripts/run_tasks.py wall_cupboard_open reach_target_single wall_cupboard_close \
   flip_cup flip_cutlery dishwasher_load_cutlery put_cups dishwasher_load_plates \
-  sandwich_remove saucepan_to_hob stack_blocks \
+  sandwich_remove saucepan_to_hob stack_blocks stack_blocks:72000 \
   --train-gpus 0,1,2,3,4,5 --eval-gpus 6,7
 ```
 
-Cost on 8 × H20: training runs at 1.4 s/step (measured), about 11.7 h per task and 129 h
-for the eleven. Evaluation (250 episodes per task) runs at about 9 env steps/s per worker;
-when every episode times out it takes from 7 worker-hours (`reach_target_single`) to
-68 worker-hours (`stack_blocks`), 256 worker-hours for the eleven. With 4 eval workers it
-fits inside the training time. We have run each step of `run_tasks.py` separately (export,
-`launch_v3.sh`, `eval_v3.py`); we have not run the script end to end.
+Cost on 8 × H20: training runs at 1.4 s/step (measured), about 11.7 h per 30k-step run and
+28 h for the 72k run, about 157 h for all twelve runs. Evaluation (250 episodes per run)
+runs at about 9 env steps/s per worker; when every episode times out it takes from
+7 worker-hours (`reach_target_single`) to 68 worker-hours (`stack_blocks`). With 4 eval
+workers it runs during the next run's training.
+
+### Results from scratch on the public release
+
+These runs train from `lerobot/pi05_base` on the public data, on the public env, with
+`run_tasks.py` (6 × H20, the paper recipe). Raw outputs: `results/public_training/`.
+The table grows as runs finish.
+
+| Run | 26k | 27k | 28k | 29k | 30k | Pooled /250 | Final loss |
+|---|---|---|---|---|---|---|---|
+| wall_cupboard_open | 48 | 38 | 44 | 45 | 46 | 221 (88.4%) | 0.040 |
+
+`wall_cupboard_open` was the pilot. No robot fell, the 29 failures ran to the 1450-step
+budget, and `protocol_violations` was empty in every episode.
 
 ## Substrate
 
@@ -266,6 +283,7 @@ data equals the public data (see the stats column above).
 | `results/public_release/` | Raw output of the public-release check: `<task>_prep.json` (stats comparison), `<task>_030000_w<k>.json` (one shard of the 50 seeds each) |
 | `results/replay/` | Bit-exact replay check of all 20 tasks, 10 demos each |
 | `requirements_public_validated.txt` | Package versions of the public-release check |
+| `results/public_training/` | Runs trained from scratch on the public release with `run_tasks.py`: one JSON per eval shard and `<run>_summary.json` |
 | `results/release_check/` | Release-only check of the current `eval_v3.py`: one 5-episode shard of each paper task with `protocol_violations` recorded |
 
 ## Licence
