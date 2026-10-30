@@ -239,6 +239,7 @@ The table grows as runs finish.
 | Run | 26k | 27k | 28k | 29k | 30k | Pooled /250 | Final loss |
 |---|---|---|---|---|---|---|---|
 | wall_cupboard_open | 48 | 38 | 44 | 45 | 46 | 221 (88.4%) | 0.040 |
+| reach_target_single | 50 | 50 | 50 | 50 | 50 | 250 (100%) | 0.021 |
 
 `wall_cupboard_open` was the pilot. No robot fell, the 29 failures ran to the 1450-step
 budget, and `protocol_violations` was empty in every episode.

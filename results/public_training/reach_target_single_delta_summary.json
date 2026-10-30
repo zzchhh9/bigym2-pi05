@@ -1,0 +1,17 @@
+{
+ "run": "reach_target_single_delta",
+ "task": "reach_target_single",
+ "steps": 30000,
+ "per_step": [
+  "26k:50/50",
+  "27k:50/50",
+  "28k:50/50",
+  "29k:50/50",
+  "30k:50/50"
+ ],
+ "pooled": [
+  250,
+  250
+ ],
+ "problems": []
+}
