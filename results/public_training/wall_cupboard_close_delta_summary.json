@@ -1,0 +1,17 @@
+{
+ "run": "wall_cupboard_close_delta",
+ "task": "wall_cupboard_close",
+ "steps": 30000,
+ "per_step": [
+  "26k:47/50",
+  "27k:49/50",
+  "28k:50/50",
+  "29k:44/50",
+  "30k:49/50"
+ ],
+ "pooled": [
+  239,
+  250
+ ],
+ "problems": []
+}

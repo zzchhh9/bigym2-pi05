@@ -240,9 +240,11 @@ The table grows as runs finish.
 |---|---|---|---|---|---|---|---|
 | wall_cupboard_open | 48 | 38 | 44 | 45 | 46 | 221 (88.4%) | 0.040 |
 | reach_target_single | 50 | 50 | 50 | 50 | 50 | 250 (100%) | 0.021 |
+| wall_cupboard_close | 47 | 49 | 50 | 44 | 49 | 239 (95.6%) | 0.059 |
 
-`wall_cupboard_open` was the pilot. No robot fell, the 29 failures ran to the 1450-step
-budget, and `protocol_violations` was empty in every episode.
+`wall_cupboard_open` was the pilot. In every run so far no robot fell, every failure ran
+to the task's step budget (29 failures at 1450 steps in `wall_cupboard_open`, 11 at 1700
+steps in `wall_cupboard_close`), and `protocol_violations` was empty in every episode.
 
 ## Substrate
 
