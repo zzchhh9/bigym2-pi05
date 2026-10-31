@@ -8,8 +8,10 @@ steps as in the paper, or ``task:steps`` for another length; a run with another
 length gets its own directory (``<task>_delta_<k>k``), so one task can be
 trained at two lengths.
 
-Runs train one after another; a finished run is scored on the eval GPUs while
-the next one trains, and on --final-eval-gpus too once all training is done.
+Runs train one after another. Each of the last five checkpoints is scored on
+the eval GPUs as soon as it is saved (LeRobot points checkpoints/last at a
+checkpoint only after writing it), so scoring overlaps the end of its own run
+and the next run's training; once all training is done, --final-eval-gpus join.
 The script can be stopped and started again: finished checkpoints and complete
 eval shards are kept, a trainer that is still running is waited for (not started
 twice), and a trainer that died resumes from its newest checkpoint. A file named
@@ -151,6 +153,15 @@ def steps_on_disk(ckdir):
     return sorted(int(p.name) for p in ckdir.glob("[0-9]*") if p.is_dir()) if ckdir.exists() else []
 
 
+def saved_steps(ckdir, steps):
+    """The steps whose checkpoint is complete: at or before the one ``last`` points at."""
+    try:
+        last = int((ckdir / "last").resolve().name)
+    except (OSError, ValueError):
+        return []
+    return [s for s in steps if s <= last and (ckdir / f"{s:06d}").is_dir()]
+
+
 def prune(ckdir, keep_from):
     # Keep the two newest: the newest may still be being written when a trainer dies.
     for s in steps_on_disk(ckdir)[:-2]:
@@ -179,13 +190,13 @@ def running_trainer(out):
     return None
 
 
-def wait_trainer(pid, ckdir, keep_from):
+def wait_trainer(pid, ckdir, keep_from, poll):
     while Path(f"/proc/{pid}").exists():
-        prune(ckdir, keep_from); time.sleep(300)
+        prune(ckdir, keep_from); poll(); time.sleep(300)
     prune(ckdir, keep_from)
 
 
-def train(runs, run, gpus):
+def train(runs, run, gpus, poll=lambda: None):
     out = runs / run.name; ckdir = out / "checkpoints"
     for attempt in range(4):
         if run.steps in steps_on_disk(ckdir):
@@ -194,7 +205,7 @@ def train(runs, run, gpus):
         pid = running_trainer(out)
         if pid:
             log(f"TRAIN {run.name}: waiting for the trainer already running (pid {pid})")
-            wait_trainer(pid, ckdir, run.eval_steps[0])
+            wait_trainer(pid, ckdir, run.eval_steps[0], poll)
             continue
         resume = "1" if steps_on_disk(ckdir) else "0"
         if resume == "0" and out.exists():
@@ -208,7 +219,7 @@ def train(runs, run, gpus):
             return False
         pid = int(m.group(1)); logline = next((l for l in r.stdout.splitlines() if "log:" in l), "")
         log(f"TRAIN {run.name} pid {pid} resume={resume} attempt {attempt} {logline.strip()}")
-        wait_trainer(pid, ckdir, run.eval_steps[0])
+        wait_trainer(pid, ckdir, run.eval_steps[0], poll)
         log(f"TRAIN EXIT {run.name}: checkpoints {steps_on_disk(ckdir)[-3:]}")
     return run.steps in steps_on_disk(ckdir)
 
@@ -260,10 +271,20 @@ def main():
         if (out_dir / "STOP").exists():
             log(f"STOP file found: no more training ({run.name} and later are skipped)"); break
         prepare(run.task)
-        if not train(runs, run, a.train_gpus):
-            log(f"GIVE UP training {run.name}"); continue
-        fs = [ex.submit(eval_shard, pool, runs, out_dir, run, s, w)
-              for s in run.eval_steps for w in range(NSHARD)]
+        fs, queued = [], set()
+
+        def queue(run=run, fs=fs, queued=queued):
+            for s in saved_steps(runs / run.name / "checkpoints", run.eval_steps):
+                if s not in queued:
+                    queued.add(s); log(f"EVAL QUEUE {run.name} {s}")
+                    fs.extend(ex.submit(eval_shard, pool, runs, out_dir, run, s, w) for w in range(NSHARD))
+
+        trained = train(runs, run, a.train_gpus, queue)
+        queue()
+        if not trained:
+            log(f"GIVE UP training {run.name}")
+        if not fs:
+            continue
         reporters.append(threading.Thread(target=report, args=(run, fs)))
         reporters[-1].start()
     pool.add([int(g) for g in (a.final_eval_gpus or a.train_gpus).split(",")],

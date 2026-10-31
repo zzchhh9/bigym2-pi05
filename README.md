@@ -224,11 +224,14 @@ python scripts/run_tasks.py wall_cupboard_open reach_target_single wall_cupboard
   --train-gpus 0,1,2,3,4,5 --eval-gpus 6,7
 ```
 
-Cost on 8 × H20: training runs at 1.4 s/step (measured), about 11.7 h per 30k-step run and
-28 h for the 72k run, about 157 h for all twelve runs. Evaluation (250 episodes per run)
-runs at about 9 env steps/s per worker; when every episode times out it takes from
-7 worker-hours (`reach_target_single`) to 68 worker-hours (`stack_blocks`). With 4 eval
-workers it runs during the next run's training.
+Cost on 8 × H20: training averages 1.47 s/step with start-up and checkpoint saves (measured:
+12 h 16 min and 12 h 14 min from launch to the last checkpoint for `reach_target_single` and
+`wall_cupboard_close`), so about 12.2 h per 30k-step run, 29 h for the 72k run and 164 h for
+all twelve runs. Evaluation (250 episodes per run) runs at about 9 env steps/s per worker;
+when every episode times out it takes from 7 worker-hours (`reach_target_single`) to
+68 worker-hours (`stack_blocks`). Each checkpoint is scored as soon as it is saved, so with
+4 eval workers the evaluation runs during the last 4000 steps of its run and the next run's
+training.
 
 ### Results from scratch on the public release
 
