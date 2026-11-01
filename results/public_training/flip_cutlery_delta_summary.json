@@ -1,0 +1,17 @@
+{
+ "run": "flip_cutlery_delta",
+ "task": "flip_cutlery",
+ "steps": 30000,
+ "per_step": [
+  "26k:35/50",
+  "27k:39/50",
+  "28k:43/50",
+  "29k:41/50",
+  "30k:34/50"
+ ],
+ "pooled": [
+  192,
+  250
+ ],
+ "problems": []
+}
