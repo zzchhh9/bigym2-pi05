@@ -16,7 +16,9 @@ The script can be stopped and started again: finished checkpoints and complete
 eval shards are kept, a trainer that is still running is waited for (not started
 twice), and a trainer that died resumes from its newest checkpoint. A file named
 STOP in --eval-out stops the script from starting further training; evaluation
-of the runs already trained goes on.
+of the runs already trained goes on. With --train-min-free-mib, a trainer starts
+only once every training GPU has that much memory free, so a job holding one of
+them is waited for, not shared.
 
     python scripts/run_tasks.py flip_cup stack_blocks stack_blocks:72000 \\
         --train-gpus 0,1,2,3,4,5 --eval-gpus 6,7
@@ -196,7 +198,23 @@ def wait_trainer(pid, ckdir, keep_from, poll):
     prune(ckdir, keep_from)
 
 
-def train(runs, run, gpus, poll=lambda: None):
+def wait_gpus(gpus, min_free, stopped, poll):
+    """Wait until every GPU in ``gpus`` has ``min_free`` MiB free; False if STOP appears first."""
+    waited = 0
+    while min_free:
+        states = {g: gpu_state(int(g)) for g in gpus.split(",")}
+        busy = {g: st for g, st in states.items() if st is None or st[0] < min_free}
+        if not busy:
+            break
+        if stopped():
+            return False
+        if waited % 3600 == 0:
+            log(f"TRAIN WAIT gpus {busy} (free MiB, util %): busy or short of memory, waited {waited // 60} min")
+        poll(); time.sleep(300); waited += 300
+    return True
+
+
+def train(runs, run, gpus, poll=lambda: None, min_free=0, stopped=lambda: False):
     out = runs / run.name; ckdir = out / "checkpoints"
     for attempt in range(4):
         if run.steps in steps_on_disk(ckdir):
@@ -207,6 +225,9 @@ def train(runs, run, gpus, poll=lambda: None):
             log(f"TRAIN {run.name}: waiting for the trainer already running (pid {pid})")
             wait_trainer(pid, ckdir, run.eval_steps[0], poll)
             continue
+        if not wait_gpus(gpus, min_free, stopped, poll):
+            log(f"TRAIN {run.name}: STOP file found while waiting for GPUs; not started")
+            return False
         resume = "1" if steps_on_disk(ckdir) else "0"
         if resume == "0" and out.exists():
             shutil.rmtree(out)                 # died before its first checkpoint
@@ -251,6 +272,9 @@ def main():
     p.add_argument("--final-eval-per-gpu", type=int, default=None,
                    help="eval workers per --final-eval-gpus GPU (default: --eval-per-gpu)")
     p.add_argument("--eval-min-free-mib", type=int, default=12000)
+    p.add_argument("--train-min-free-mib", type=int, default=0,
+                   help="start a trainer only when every training GPU has this much memory free "
+                        "(default 0: do not check)")
     p.add_argument("--yield-gpus", default="",
                    help="GPUs shared with another service: eval starts there only when the GPU is idle")
     p.add_argument("--runs", default=str(WORK / "pi05_runs_v3"))
@@ -267,8 +291,11 @@ def main():
         res = summary(out_dir, run); done.append(res)
         (out_dir / f"{run.name}_summary.json").write_text(json.dumps(res, indent=1))
 
+    def stopped():
+        return (out_dir / "STOP").exists()
+
     for run in map(Run.parse, a.runs_):
-        if (out_dir / "STOP").exists():
+        if stopped():
             log(f"STOP file found: no more training ({run.name} and later are skipped)"); break
         prepare(run.task)
         fs, queued = [], set()
@@ -279,9 +306,9 @@ def main():
                     queued.add(s); log(f"EVAL QUEUE {run.name} {s}")
                     fs.extend(ex.submit(eval_shard, pool, runs, out_dir, run, s, w) for w in range(NSHARD))
 
-        trained = train(runs, run, a.train_gpus, queue)
+        trained = train(runs, run, a.train_gpus, queue, a.train_min_free_mib, stopped)
         queue()
-        if not trained:
+        if not trained and not stopped():
             log(f"GIVE UP training {run.name}")
         if not fs:
             continue
