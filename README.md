@@ -239,18 +239,23 @@ These runs train from `lerobot/pi05_base` on the public data, on the public env,
 `run_tasks.py` (6 × H20, the paper recipe). Raw outputs: `results/public_training/`.
 The table grows as runs finish.
 
-| Run | 26k | 27k | 28k | 29k | 30k | Pooled /250 | Final loss |
-|---|---|---|---|---|---|---|---|
-| wall_cupboard_open | 48 | 38 | 44 | 45 | 46 | 221 (88.4%) | 0.040 |
-| reach_target_single | 50 | 50 | 50 | 50 | 50 | 250 (100%) | 0.021 |
-| wall_cupboard_close | 47 | 49 | 50 | 44 | 49 | 239 (95.6%) | 0.059 |
-| flip_cup | 38 | 42 | 40 | 37 | 43 | 200 (80.0%) | 0.034 |
-| flip_cutlery | 35 | 39 | 43 | 41 | 34 | 192 (76.8%) | 0.033 |
+| Run | 26k | 27k | 28k | 29k | 30k | Pooled /250 | Failures | Final loss |
+|---|---|---|---|---|---|---|---|---|
+| wall_cupboard_open | 48 | 38 | 44 | 45 | 46 | 221 (88.4%) | 29 timeout | 0.040 |
+| reach_target_single | 50 | 50 | 50 | 50 | 50 | 250 (100%) | none | 0.021 |
+| wall_cupboard_close | 47 | 49 | 50 | 44 | 49 | 239 (95.6%) | 11 timeout | 0.059 |
+| flip_cup | 38 | 42 | 40 | 37 | 43 | 200 (80.0%) | 50 timeout | 0.034 |
+| flip_cutlery | 35 | 39 | 43 | 41 | 34 | 192 (76.8%) | 58 timeout | 0.033 |
+| dishwasher_load_cutlery | 28 | 23 | 24 | 24 | 28 | 127 (50.8%) | 93 timeout, 30 terminated | 0.057 |
+| put_cups | 15 | 21 | 22 | 23 | 19 | 100 (40.0%) | 149 timeout, 1 fell | 0.045 |
 
-`wall_cupboard_open` was the pilot. In every run so far no robot fell and
-`protocol_violations` was empty in every episode. Every failure ran to the task's step
-budget: 1450 steps in `wall_cupboard_open` (29 failures), 1700 in `wall_cupboard_close` (11),
-1850 in `flip_cup` (50) and 1950 in `flip_cutlery` (58).
+`wall_cupboard_open` was the pilot. `protocol_violations` was empty in every episode. In the
+Failures column, `timeout` means the episode ran to the task's step budget (1450 steps in
+`wall_cupboard_open`, 1700 in `wall_cupboard_close`, 1850 in `flip_cup`, 1950 in `flip_cutlery`,
+2650 in `dishwasher_load_cutlery`, 3000 in `put_cups`); `fell` means the controller latched a
+fall; `terminated` means the task's `_fail()` ended the episode early. In
+`dishwasher_load_cutlery`, `_fail()` fires when a knife or fork touches the floor or the
+robot's pelvis moves more than `MAX_DISTANCE_FROM_ORIGIN` from the origin.
 
 ## Substrate
 

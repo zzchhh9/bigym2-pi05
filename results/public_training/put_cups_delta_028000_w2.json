@@ -1,0 +1,110 @@
+{
+ "task": "put_cups",
+ "ckpt": "put_cups_delta/checkpoints/028000/pretrained_model",
+ "relative": true,
+ "n_action_steps": 16,
+ "max_steps_override": null,
+ "step_cap": 3000,
+ "prompt": "Pick up the cups from the table and put them into the closed wall cabinet.",
+ "prompt_source": "lerobot_tasks_parquet",
+ "episode_length": 30000,
+ "episode_length_source": "task_protocol",
+ "episode_length_protocol": 30000,
+ "episode_length_collected": 60000,
+ "budget_provenance": "data_derived",
+ "deterministic_reset": true,
+ "protocol_violations": [],
+ "substrate_fingerprint": {
+  "substrate_version": "bigym2-mj381-v1",
+  "mujoco_version": "3.8.1",
+  "task": "put_cups",
+  "initialization_profile": "upstream",
+  "robot_model": "g1_dex1",
+  "lowerbody_backend": "groot_wbc_g1",
+  "success_hold_seconds": 1.0,
+  "lowerbody_base_action_mode": "lowerbody_cmd",
+  "lowerbody_init_stance": "keyframe",
+  "lowerbody_pitch_cmd": true,
+  "g1_passive_base_tilt": true,
+  "control_step_seconds": 0.02,
+  "lowerbody_checkpoint": null,
+  "lowerbody_weights": {
+   "GR00T-WholeBodyControl-Balance.onnx": "f645da599d4ca3d29ed273c8f4712620bb680d34977469ca3aeabe5bb9631c18",
+   "GR00T-WholeBodyControl-Walk.onnx": "7c82255b6905ffcc4468fa7f8ddcf7b70db168cf1042107ccab887cb6a8e5407"
+  },
+  "reset_warmup_steps": 200,
+  "reach_tolerance": null,
+  "compiled_model_sha256": "7b65dc407a6312fe33496ccb22fb0d9a988a4cf9919bfc3df7022e820d50b672",
+  "bigym_version": "1.0.0",
+  "bigym_git_sha": "d71501359b21",
+  "episode_length": 30000,
+  "demo_down_sample_rate": 10,
+  "action_representation": "absolute",
+  "upper_delta_scale_rad": null,
+  "action_dim": 21,
+  "low_dim_component_slices": {
+   "proprioception": [
+    0,
+    50
+   ],
+   "proprioception_grippers": [
+    50,
+    52
+   ],
+   "proprioception_floating_base": [
+    52,
+    56
+   ]
+  },
+  "solver": 2,
+  "contact_signature": "7f32a81a4bda9a5d"
+ },
+ "episodes": [
+  {
+   "seed": 620002,
+   "steps": 964,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "wall_s": 55.8
+  },
+  {
+   "seed": 620012,
+   "steps": 3000,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "timeout",
+   "fell": false,
+   "wall_s": 169.3
+  },
+  {
+   "seed": 620022,
+   "steps": 3000,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "timeout",
+   "fell": false,
+   "wall_s": 170.1
+  },
+  {
+   "seed": 620032,
+   "steps": 3000,
+   "max_reward": 0.0,
+   "success": false,
+   "termination": "timeout",
+   "fell": false,
+   "wall_s": 170.2
+  },
+  {
+   "seed": 620042,
+   "steps": 1105,
+   "max_reward": 1.0,
+   "success": true,
+   "termination": "success",
+   "fell": false,
+   "wall_s": 62.6
+  }
+ ],
+ "success_rate": 0.4
+}

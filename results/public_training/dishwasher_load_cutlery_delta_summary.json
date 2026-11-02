@@ -1,0 +1,17 @@
+{
+ "run": "dishwasher_load_cutlery_delta",
+ "task": "dishwasher_load_cutlery",
+ "steps": 30000,
+ "per_step": [
+  "26k:28/50",
+  "27k:23/50",
+  "28k:24/50",
+  "29k:24/50",
+  "30k:28/50"
+ ],
+ "pooled": [
+  127,
+  250
+ ],
+ "problems": []
+}
