@@ -1,0 +1,17 @@
+{
+ "run": "dishwasher_load_plates_delta",
+ "task": "dishwasher_load_plates",
+ "steps": 30000,
+ "per_step": [
+  "26k:27/50",
+  "27k:34/50",
+  "28k:30/50",
+  "29k:39/50",
+  "30k:39/50"
+ ],
+ "pooled": [
+  169,
+  250
+ ],
+ "problems": []
+}

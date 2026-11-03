@@ -248,14 +248,16 @@ The table grows as runs finish.
 | flip_cutlery | 35 | 39 | 43 | 41 | 34 | 192 (76.8%) | 58 timeout | 0.033 |
 | dishwasher_load_cutlery | 28 | 23 | 24 | 24 | 28 | 127 (50.8%) | 93 timeout, 30 terminated | 0.057 |
 | put_cups | 15 | 21 | 22 | 23 | 19 | 100 (40.0%) | 149 timeout, 1 fell | 0.045 |
+| dishwasher_load_plates | 27 | 34 | 30 | 39 | 39 | 169 (67.6%) | 54 timeout, 27 terminated | 0.064 |
 
 `wall_cupboard_open` was the pilot. `protocol_violations` was empty in every episode. In the
 Failures column, `timeout` means the episode ran to the task's step budget (1450 steps in
 `wall_cupboard_open`, 1700 in `wall_cupboard_close`, 1850 in `flip_cup`, 1950 in `flip_cutlery`,
-2650 in `dishwasher_load_cutlery`, 3000 in `put_cups`); `fell` means the controller latched a
-fall; `terminated` means the task's `_fail()` ended the episode early. In
-`dishwasher_load_cutlery`, `_fail()` fires when a knife or fork touches the floor or the
-robot's pelvis moves more than `MAX_DISTANCE_FROM_ORIGIN` from the origin.
+2650 in `dishwasher_load_cutlery`, 3000 in `put_cups`, 3150 in `dishwasher_load_plates`); `fell`
+means the controller latched a fall; `terminated` means the task's `_fail()` ended the episode
+early. `_fail()` fires when a knife or fork (`dishwasher_load_cutlery`) or a plate
+(`dishwasher_load_plates`) touches the floor, or when the robot's pelvis moves more than
+`MAX_DISTANCE_FROM_ORIGIN` from the origin.
 
 ## Substrate
 
