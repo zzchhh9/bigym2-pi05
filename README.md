@@ -249,15 +249,18 @@ The table grows as runs finish.
 | dishwasher_load_cutlery | 28 | 23 | 24 | 24 | 28 | 127 (50.8%) | 93 timeout, 30 terminated | 0.057 |
 | put_cups | 15 | 21 | 22 | 23 | 19 | 100 (40.0%) | 149 timeout, 1 fell | 0.045 |
 | dishwasher_load_plates | 27 | 34 | 30 | 39 | 39 | 169 (67.6%) | 54 timeout, 27 terminated | 0.064 |
+| sandwich_remove | 17 | 19 | 25 | 21 | 14 | 96 (38.4%) | 146 timeout, 8 terminated | 0.030 |
 
-`wall_cupboard_open` was the pilot. `protocol_violations` was empty in every episode. In the
-Failures column, `timeout` means the episode ran to the task's step budget (1450 steps in
-`wall_cupboard_open`, 1700 in `wall_cupboard_close`, 1850 in `flip_cup`, 1950 in `flip_cutlery`,
-2650 in `dishwasher_load_cutlery`, 3000 in `put_cups`, 3150 in `dishwasher_load_plates`); `fell`
-means the controller latched a fall; `terminated` means the task's `_fail()` ended the episode
-early. `_fail()` fires when a knife or fork (`dishwasher_load_cutlery`) or a plate
-(`dishwasher_load_plates`) touches the floor, or when the robot's pelvis moves more than
-`MAX_DISTANCE_FROM_ORIGIN` from the origin.
+`wall_cupboard_open` was the pilot. `sandwich_remove` was paused at step 28000 and resumed from
+that checkpoint (`--resume`, which restores the optimizer and the schedule). `protocol_violations`
+was empty in every episode. In the Failures column, `timeout` means the episode ran to the task's
+step budget (1450 steps in `wall_cupboard_open`, 1700 in `wall_cupboard_close`, 1850 in
+`flip_cup`, 1950 in `flip_cutlery`, 2650 in `dishwasher_load_cutlery`, 3000 in `put_cups`, 3150 in
+`dishwasher_load_plates` and `sandwich_remove`); `fell` means the controller latched a fall;
+`terminated` means the task's `_fail()` ended the episode early. `_fail()` fires when the robot's
+pelvis moves more than `MAX_DISTANCE_FROM_ORIGIN` from the origin; in some tasks it also fires when
+a knife or fork (`dishwasher_load_cutlery`) or a plate (`dishwasher_load_plates`) touches the
+floor, or when a gripper holds the sandwich (`sandwich_remove`).
 
 ## Substrate
 

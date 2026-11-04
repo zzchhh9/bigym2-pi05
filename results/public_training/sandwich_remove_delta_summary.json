@@ -1,0 +1,17 @@
+{
+ "run": "sandwich_remove_delta",
+ "task": "sandwich_remove",
+ "steps": 30000,
+ "per_step": [
+  "26k:17/50",
+  "27k:19/50",
+  "28k:25/50",
+  "29k:21/50",
+  "30k:14/50"
+ ],
+ "pooled": [
+  96,
+  250
+ ],
+ "problems": []
+}
